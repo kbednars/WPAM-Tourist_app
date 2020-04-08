@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "173469497734",
+    "firebase_url": "https://tourist-interactive-app.firebaseio.com",
+    "project_id": "tourist-interactive-app",
+    "storage_bucket": "tourist-interactive-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173469497734:android:abf186d3439b8d64709407",
+        "android_client_info": {
+          "package_name": "com.example.wpam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173469497734-nav8h8b7btroq54qtp9ui89ihml6aps5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wpam",
+            "certificate_hash": "109942b69da2e17fe0a5ccc94d82d447149ed012"
+          }
+        },
+        {
+          "client_id": "173469497734-99gqk2rhjfeflsdjabvmqnm5e0h88me7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKWvzKLuC2razaVv8HCZcvbwcx9_onkMs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173469497734-99gqk2rhjfeflsdjabvmqnm5e0h88me7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
