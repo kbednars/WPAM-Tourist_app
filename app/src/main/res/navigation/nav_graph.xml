@@ -18,7 +18,7 @@
     </activity>
     <activity
         android:id="@+id/displayMessageActivity2"
-        android:name="com.example.wpam.DisplayMessageActivity"
+        android:name="com.example.wpam.DisplayLoggedActivity"
         android:label="activity_display_message"
-        tools:layout="@layout/activity_display_message" />
+        tools:layout="@layout/activity_display_logged" />
 </navigation>

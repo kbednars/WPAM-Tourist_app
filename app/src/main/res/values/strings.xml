@@ -13,4 +13,6 @@
     <string name="button_send">Send</string>
     <string name="facebook_app_id">683052985852387</string>
     <string name="fb_login_protocol_scheme">fb683052985852387</string>
+    <string name="tourist_app">Tourist App</string>
+    <string name="server_client_id">999172525453</string>
 </resources>

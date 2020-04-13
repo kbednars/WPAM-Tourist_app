@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "173469497734-ljmlt6pjsbcf2jnkrgmaton9cfatk4ip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wpam",
+            "certificate_hash": "f45dc551c8d4b8bf5e1924a91ee5d86edeaa7fbb"
+          }
+        },
+        {
           "client_id": "173469497734-nav8h8b7btroq54qtp9ui89ihml6aps5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "173469497734-99gqk2rhjfeflsdjabvmqnm5e0h88me7.apps.googleusercontent.com",
+              "client_id": "173469497734-rs64hc7qfbni86dugsg0ga1lfjjm2u4k.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
