@@ -21,4 +21,9 @@
     <string name="e_mail">E-mail</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign In</string>
+    <string name="resend_verification_link">Resend verification link</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="reset_password">Reset password</string>
+    <string name="forgot_password">Forgot password</string>
 </resources>

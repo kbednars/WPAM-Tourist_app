@@ -37,11 +37,27 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private fun sendVerificationEmail(){
+        val user = firebaseAuth.currentUser
+        if (user != null){
+            user.sendEmailVerification().addOnCompleteListener(this){task ->
+                if (task.isSuccessful){
+                    Toast.makeText(baseContext, "Verification E-mail sent",
+                        Toast.LENGTH_SHORT).show()
+                }else {
+                    Toast.makeText(baseContext, "Couldn't send Verification E-mail",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun registerNewEmail(email: String, password: String){
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this){task ->
             if (task.isSuccessful){
                 // Sign in success, update UI with the signed-in user's information
                 Log.d(TAG, "createUserWithEmail:success")
+                sendVerificationEmail()
                 firebaseAuth.signOut()
                 loginManager.logOut()
                 startActivity(Intent(this, MainActivity::class.java).apply {
