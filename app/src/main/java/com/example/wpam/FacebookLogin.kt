@@ -22,17 +22,17 @@ class FacebookLogin(
         activity.buttonFacebookLogin.registerCallback(callbackManager, object :
             FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
-                Log.d(MainActivity.TAG, "facebook:onSuccess:$loginResult")
+                Log.d(MainActivity.TAG_facebook, "facebook:onSuccess:$loginResult")
                 handleFacebookAccessToken(loginResult.accessToken)
                 activity.loggedSuc()
             }
             override fun onCancel() {
-                Log.d(MainActivity.TAG, "facebook:onCancel")
+                Log.d(MainActivity.TAG_facebook, "facebook:onCancel")
                 // ...
             }
 
             override fun onError(error: FacebookException) {
-                Log.d(MainActivity.TAG, "facebook:onError", error)
+                Log.d(MainActivity.TAG_facebook, "facebook:onError", error)
                 // ...
             }
         })

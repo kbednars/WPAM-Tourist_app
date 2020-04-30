@@ -16,22 +16,21 @@
         <com.facebook.login.widget.LoginButton
             android:id="@+id/buttonFacebookLogin"
             android:layout_width="wrap_content"
-            android:layout_height="27dp"
+            android:layout_height="0dp"
             android:layout_gravity="clip_horizontal|center|center_horizontal"
-            android:layout_marginBottom="72dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonFacebookLogin"
+            android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/resetPasswordDialogButton">
 
         </com.google.android.gms.common.SignInButton>
 
@@ -73,7 +72,8 @@
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emailField" />
+            app:layout_constraintTop_toBottomOf="@+id/emailField"
+            android:autofillHints="" />
 
         <Button
             android:id="@+id/signInButton"
@@ -96,6 +96,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signInButton" />
+
+        <Button
+            android:id="@+id/resetPasswordDialogButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/forgot_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/registerActivityButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

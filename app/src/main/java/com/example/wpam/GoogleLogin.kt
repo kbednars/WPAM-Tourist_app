@@ -48,20 +48,20 @@ class GoogleLogin(
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(MainActivity.TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+        Log.d(MainActivity.TAG_google, "firebaseAuthWithGoogle:" + acct.id!!)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(MainActivity.TAG, "signInWithCredential:success")
+                    Log.d(MainActivity.TAG_google, "signInWithCredential:success")
                     val user = firebaseAuth.currentUser
                     Toast.makeText(activity, "You logged with email: "+user!!.email, Toast.LENGTH_LONG).show()
                     activity.loggedSuc()
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(MainActivity.TAG, "signInWithCredential:failure", task.exception)
+                    Log.w(MainActivity.TAG_google, "signInWithCredential:failure", task.exception)
                     Toast.makeText(activity, "Authentication Failed.", Toast.LENGTH_SHORT).show()
                 }
             }

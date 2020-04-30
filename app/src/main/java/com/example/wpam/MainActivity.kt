@@ -2,20 +2,24 @@
 
 package com.example.wpam
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.dialog_reset_password.view.*
 
 const val EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"
 
@@ -26,13 +30,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var googleLogin: GoogleLogin
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser != null) {
+        if (firebaseUser != null && firebaseUser.isEmailVerified) {
             val intent = Intent(this, DisplayLoggedActivity::class.java)
             startActivity(intent)
             finish()
         }
     }
 
+    @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,29 +50,70 @@ class MainActivity : AppCompatActivity() {
         FacebookLogin(firebaseAuth!!, this, callbackManager!!)
 
         val signInButton = findViewById<View>(R.id.signInButton) as Button
-        signInButton.setOnClickListener{
-            firebaseAuth!!.signInWithEmailAndPassword(emailField.text.toString(), passwordField.text.toString())
-                .addOnCompleteListener(this) { task ->
+        signInButton.setOnClickListener {
+            if (emailField.text.isNotEmpty() && passwordField.text.isNotEmpty()) {
+                firebaseAuth!!.signInWithEmailAndPassword(emailField.text.toString(),passwordField.text.toString()).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithEmail:success")
-                        val user = firebaseAuth!!.currentUser
-                        val intent = Intent(this, DisplayLoggedActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        if (firebaseAuth!!.currentUser!!.isEmailVerified) {
+                            Log.d(TAG_emailLogin, "signInWithEmail:success")
+                            val intent = Intent(this, DisplayLoggedActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Log.w(TAG_emailLogin, "signInWithEmail:failure", task.exception)
+                            Toast.makeText(
+                                baseContext, "Check your E-mail for verification link",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            passwordField.text.clear()
+                            firebaseAuth!!.signOut()
+                        }
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.exception)
-                        Toast.makeText(baseContext, "Authentication failed: Wrong E-mail or Password",
-                            Toast.LENGTH_SHORT).show()
+                        Log.w(TAG_emailLogin, "signInWithEmail:failure", task.exception)
+                        Toast.makeText(
+                            baseContext, "Authentication failed: Wrong E-mail or Password",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         passwordField.text.clear()
                     }
                 }
+            } else {
+                Toast.makeText(baseContext, "You must fill out the fields", Toast.LENGTH_LONG)
+                    .show()
+                emailField.text.clear()
+                passwordField.text.clear()
+            }
         }
 
         val registerActivityButton = findViewById<View>(R.id.registerActivityButton) as Button
         registerActivityButton.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        val resendVerificationButton = findViewById<View>(R.id.resetPasswordDialogButton) as Button
+        resendVerificationButton.setOnClickListener{
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reset_password, null)
+            val mBuilder = AlertDialog.Builder(this).setView(mDialogView)
+            val emailResetEmail = mDialogView.findViewById<EditText>(R.id.emailResetField)
+            val mAlertDialog = mBuilder.show()
+            mDialogView.sendResetPassButton.setOnClickListener{
+                firebaseAuth!!.sendPasswordResetEmail(emailResetEmail.text.toString()).addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(baseContext, "E-mail with password reset link sent to:${emailResetEmail.text}",
+                            Toast.LENGTH_SHORT).show()
+                        mAlertDialog.dismiss()
+                    } else {
+                        Toast.makeText(baseContext, "Couldn't send e-mail with password reset link",
+                            Toast.LENGTH_SHORT).show()
+                        emailResetEmail.text.clear()
+                    }
+                }
+            }
+            mDialogView.cancelResetButton.setOnClickListener{
+                mAlertDialog.dismiss()
+            }
         }
     }
 
@@ -112,7 +158,10 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     companion object {
-        const val TAG = "FacebookLogin"
+        const val TAG_emailLogin = "EmailLogin"
+        const val TAG_google = "GoogleLogin"
+        const val TAG_facebook = "FacebookLogin"
     }
 }

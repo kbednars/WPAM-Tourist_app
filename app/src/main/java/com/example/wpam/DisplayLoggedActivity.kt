@@ -3,6 +3,7 @@ package com.example.wpam
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -53,8 +54,31 @@ class DisplayLoggedActivity : AppCompatActivity() {
         firebaseAuth.addAuthStateListener(this.authStateListener)
     }
 
+    public override fun onResume() {
+        super.onResume()
+        checkAuthState()
+    }
+
+    private fun checkAuthState(){
+        Log.d(TAG, "chceckAuthState: checking authenticitation state")
+        val user = firebaseAuth.currentUser
+        if(user == null){
+            Log.d(TAG, "chceckAuthState: user is null")
+            val intent = Intent(this, MainActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+        }else{
+            Log.d(TAG, "chceckAuthState: user is authenticated")
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         firebaseAuth.removeAuthStateListener(this.authStateListener)
+    }
+
+    companion object {
+        const val TAG = "DisplayLoggedActivity"
     }
 }
