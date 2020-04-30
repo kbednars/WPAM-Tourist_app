@@ -8,101 +8,84 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.AccessToken
 import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_register.*
 
 const val EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"
 
 class MainActivity : AppCompatActivity() {
-
     var firebaseAuth: FirebaseAuth?=null
     var callbackManager: CallbackManager?=null
-    lateinit var mGoogleSignInClient: GoogleSignInClient
     val RC_SIGN_IN: Int = 1
+    lateinit var googleLogin: GoogleLogin
+    val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+        val firebaseUser = firebaseAuth.currentUser
+        if (firebaseUser != null) {
+            val intent = Intent(this, DisplayLoggedActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Configure Google Sign In
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this,gso)
-        val signInGoogleButton = findViewById<View>(R.id.sign_in_button) as SignInButton
-        signInGoogleButton.setOnClickListener{
-            view: View? -> signInGoogle()
-        }
-
-
-
-        // Initialize Facebook Login button
         firebaseAuth = FirebaseAuth.getInstance()
         callbackManager = CallbackManager.Factory.create()
 
-        buttonFacebookLogin.setReadPermissions("email", "public_profile")
-        buttonFacebookLogin.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(loginResult: LoginResult) {
-                Log.d(TAG, "facebook:onSuccess:$loginResult")
-                handleFacebookAccessToken(loginResult.accessToken)
-                finish()
-                startActivity(Intent(this@MainActivity, DisplayLoggedActivity::class.java).apply {
-                    putExtra(EXTRA_MESSAGE, "Zalogowano")
-                })
+        // Configure Google and Facebook Sign In
+        googleLogin = GoogleLogin(firebaseAuth!!, this, RC_SIGN_IN)
+        FacebookLogin(firebaseAuth!!, this, callbackManager!!)
 
-            }
+        val signInButton = findViewById<View>(R.id.signInButton) as Button
+        signInButton.setOnClickListener{
+            firebaseAuth!!.signInWithEmailAndPassword(emailField.text.toString(), passwordField.text.toString())
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success")
+                        val user = firebaseAuth!!.currentUser
+                        val intent = Intent(this, DisplayLoggedActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                        Toast.makeText(baseContext, "Authentication failed: Wrong E-mail or Password",
+                            Toast.LENGTH_SHORT).show()
+                        passwordField.text.clear()
+                    }
+                }
+        }
 
-            override fun onCancel() {
-                Log.d(TAG, "facebook:onCancel")
-                // ...
-            }
-
-            override fun onError(error: FacebookException) {
-                Log.d(TAG, "facebook:onError", error)
-                // ...
-            }
-        })
+        val registerActivityButton = findViewById<View>(R.id.registerActivityButton) as Button
+        registerActivityButton.setOnClickListener{
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
     }
 
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = firebaseAuth?.currentUser
+        firebaseAuth!!.addAuthStateListener(this.authStateListener)
     }
 
-    private fun signInGoogle(){
-        val signInIntent: Intent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+    override fun onStop() {
+        super.onStop()
+        firebaseAuth!!.removeAuthStateListener(this.authStateListener)
     }
 
-    private fun handleFacebookAccessToken(accesToken: AccessToken?){
-        val credential = FacebookAuthProvider.getCredential(accesToken!!.token)
-        firebaseAuth!!.signInWithCredential(credential)
-            .addOnFailureListener{ e->
-                Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
-            }
-            .addOnSuccessListener { result->
-                val email = result.user!!.email
-                Toast.makeText(this, "You logged with email: "+email, Toast.LENGTH_LONG).show()
-            }
+    fun loggedSuc(){
+        startActivity(Intent(this@MainActivity, DisplayLoggedActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE, "Zalogowano")
+        })
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,42 +93,8 @@ class MainActivity : AppCompatActivity() {
         callbackManager!!.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleGoogleResult (task)
+            googleLogin.handleGoogleResult (task)
         }
-
-    }
-
-    private fun handleGoogleResult(completedTask: Task<GoogleSignInAccount>){
-        try {
-            val account: GoogleSignInAccount? = completedTask.getResult(ApiException::class.java)
-            firebaseAuthWithGoogle(account!!)
-        }catch (e: ApiException){
-            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
-
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-        firebaseAuth?.signInWithCredential(credential)
-            ?.addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
-                    val user = firebaseAuth!!.currentUser
-                    Toast.makeText(this, "You logged with email: "+user!!.email, Toast.LENGTH_LONG).show()
-                    finish()
-                    startActivity(Intent(this@MainActivity, DisplayLoggedActivity::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, "Zalogowano")})
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
-                }
-
-                // ...
-            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -164,6 +113,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     companion object {
-        private const val TAG = "FacebookLogin"
+        const val TAG = "FacebookLogin"
     }
 }
