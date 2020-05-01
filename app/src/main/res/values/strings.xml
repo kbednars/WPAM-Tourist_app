@@ -26,4 +26,12 @@
     <string name="confirm">Confirm</string>
     <string name="reset_password">Reset password</string>
     <string name="forgot_password">Forgot password</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="textview">TextView</string>
+    <string name="set_description">set Description</string>
+    <string name="description">Description</string>
+    <string name="user_data">User Data</string>
+    <string name="update_user_data">Update User Data</string>
+    <string name="name">Name</string>
+    <string name="userprofileimage">userProfileImage</string>
 </resources>
