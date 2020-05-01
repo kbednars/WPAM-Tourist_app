@@ -1,7 +1,8 @@
-package com.example.wpam
+package com.example.wpam.loginUtility
 
 import android.util.Log
 import android.widget.Toast
+import com.example.wpam.MainActivity
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -40,7 +41,7 @@ class FacebookLogin(
 
     private fun handleFacebookAccessToken(accesToken: AccessToken?){
         val credential = FacebookAuthProvider.getCredential(accesToken!!.token)
-        firebaseAuth!!.signInWithCredential(credential)
+        firebaseAuth.signInWithCredential(credential)
             .addOnFailureListener{ e->
                 Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
             }

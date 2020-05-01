@@ -1,9 +1,11 @@
-package com.example.wpam
+package com.example.wpam.loginUtility
 
 import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.example.wpam.MainActivity
+import com.example.wpam.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
