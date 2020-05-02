@@ -2,7 +2,9 @@ package com.example.wpam
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -12,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.wpam.cameraUtility.CameraUtility
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.facebook.login.LoginManager
@@ -27,6 +30,8 @@ class DisplayLoggedActivity : AppCompatActivity() {
     private val RESULT_LOAD_IMAGE = 2
     private lateinit var selectedImageBytes: ByteArray
     private var pictureJustChanged = false
+    val PERMISSION_CODE = 1000
+    private val IMAGE_CAPTURE_CODE = 42
 
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
@@ -41,18 +46,15 @@ class DisplayLoggedActivity : AppCompatActivity() {
         setContentView(R.layout.activity_display_logged)
 
         userProfileImage.setOnClickListener {
-            val i = Intent(
+            val intent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
-            startActivityForResult(i, RESULT_LOAD_IMAGE)
+            startActivityForResult(intent, RESULT_LOAD_IMAGE)
         }
 
         firebaseAuth = FirebaseAuth.getInstance()
         loginManager = LoginManager.getInstance()
-
-        // Get the Intent that started this activity and extract the string
-        val message = intent.getStringExtra(EXTRA_MESSAGE)
 
         val signOutButton = findViewById<View>(R.id.sign_out_button) as Button
         signOutButton.setOnClickListener{
@@ -76,6 +78,27 @@ class DisplayLoggedActivity : AppCompatActivity() {
                     editDescriptionField.text.toString(), null)
             Toast.makeText(this, "Setting new data", Toast.LENGTH_LONG).show()
         }
+
+        val takePictureButton = findViewById<View>(R.id.takePictureButton) as Button
+        takePictureButton.setOnClickListener{
+            CameraUtility.runCamera(this)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            PERMISSION_CODE->{
+                if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    CameraUtility.runCamera(this)
+                }else
+                    Toast.makeText(this,"Permission Denied", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     public override fun onStart() {
@@ -96,7 +119,6 @@ class DisplayLoggedActivity : AppCompatActivity() {
             }
         }
     }
-
 
     public override fun onResume() {
         super.onResume()
@@ -123,6 +145,7 @@ class DisplayLoggedActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK &&
             data != null && data.data != null) {
             val selectedImagePath = data.data
@@ -137,6 +160,18 @@ class DisplayLoggedActivity : AppCompatActivity() {
                 .load(selectedImageBytes)
                 .into(userProfileImage)
 
+            pictureJustChanged = true
+        }
+        if(requestCode == IMAGE_CAPTURE_CODE && resultCode == Activity.RESULT_OK){
+            val takenImage = BitmapFactory.decodeFile(CameraUtility.photoFile.absolutePath)
+
+            val outputStream = ByteArrayOutputStream()
+            takenImage.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+            selectedImageBytes = outputStream.toByteArray()
+
+            Glide.with(this)
+                .load(selectedImageBytes)
+                .into(userProfileImage)
             pictureJustChanged = true
         }
     }

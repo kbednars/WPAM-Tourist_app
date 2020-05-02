@@ -73,4 +73,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/com_facebook_profile_picture_blank_square" />
 
+    <Button
+        android:id="@+id/takePictureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="32dp"
+        android:text="Take Picture"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionText"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImage" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
