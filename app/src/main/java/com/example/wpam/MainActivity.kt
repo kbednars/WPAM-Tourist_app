@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser != null && firebaseUser.isEmailVerified) {
-            val intent = Intent(this, DisplayLoggedActivity::class.java)
+            val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
             finish()
         }
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                             // Sign in success, update UI with the signed-in user's information
                             if (firebaseAuth!!.currentUser!!.isEmailVerified) {
                                 Log.d(TAG_emailLogin, "signInWithEmail:success")
-                                val intent = Intent(this, DisplayLoggedActivity::class.java)
+                                val intent = Intent(this, HomePage::class.java)
                                 startActivity(intent)
                                 finish()
                             } else {
