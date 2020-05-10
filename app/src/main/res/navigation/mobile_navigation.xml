@@ -22,9 +22,9 @@
         android:name="com.example.wpam.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
-    <activity
+    <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.wpam.DisplayLoggedActivity"
-        android:label="activity_display_logged"
-        tools:layout="@layout/activity_display_logged" />
+        android:name="com.example.wpam.ui.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>
