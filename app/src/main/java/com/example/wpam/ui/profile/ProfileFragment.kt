@@ -54,6 +54,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
+
         val signOutButton = root.findViewById(R.id.fragment_sign_out_button) as Button
         signOutButton.setOnClickListener{
                 view: View? -> firebaseAuth.signOut()
@@ -63,6 +64,7 @@ class ProfileFragment : Fragment() {
                 putExtra(EXTRA_MESSAGE, "Zalogowano")})
             activity?.finish()
         }
+
         return root
     }
 }
