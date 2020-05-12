@@ -2,6 +2,7 @@ package com.example.wpam.ui.points
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,7 @@ class GetPointsFragment : Fragment() {
 
         val updateUserDataButton = root.findViewById(R.id.setUserDataButton2) as Button
         updateUserDataButton.setOnClickListener {
+            Log.i("MyTAG", "Button CLICKED")
             if (textView.text.toString() == "0"){
                     takePictureButton.isClickable = true
                     takePictureButton.isVisible = true

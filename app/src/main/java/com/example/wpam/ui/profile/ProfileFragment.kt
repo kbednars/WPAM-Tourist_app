@@ -21,20 +21,6 @@ class ProfileFragment : Fragment() {
     lateinit var firebaseAuth: FirebaseAuth
     lateinit var loginManager: LoginManager
 
-    private val RESULT_LOAD_IMAGE = 2
-    private lateinit var selectedImageBytes: ByteArray
-    private var pictureJustChanged = false
-    val PERMISSION_CODE = 1000
-    private val IMAGE_CAPTURE_CODE = 42
-
-    val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser == null) {
-            val intent = Intent(activity, MainActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
     private lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreateView(
@@ -44,8 +30,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         firebaseAuth = FirebaseAuth.getInstance()
         loginManager = LoginManager.getInstance()
-
-
 
         profileViewModel =
             ViewModelProviders.of(this).get(ProfileViewModel::class.java)

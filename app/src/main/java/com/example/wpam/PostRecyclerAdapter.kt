@@ -35,6 +35,11 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         items = blogList
     }
 
+    fun addList(blogList: List<BlogPost>){
+
+        items = items + blogList;
+    }
+
     class BlogViewHolder constructor(
         itemView: View
     ): RecyclerView.ViewHolder(itemView){
