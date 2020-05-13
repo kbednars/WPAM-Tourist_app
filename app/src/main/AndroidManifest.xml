@@ -37,6 +37,9 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
+        <activity
+            android:name=".HomePage"
+            android:label="@string/title_activity_home_page"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
