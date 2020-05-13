@@ -34,4 +34,10 @@
     <string name="update_user_data">Update User Data</string>
     <string name="name">Name</string>
     <string name="userprofileimage">userProfileImage</string>
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="title_home">Home</string>
+    <string name="title_route_creator">Route Creator</string>
+    <string name="title_get_points">Get Points</string>
+    <string name="title_ranking">Ranking</string>
+    <string name="title_profile">Profile</string>
 </resources>
