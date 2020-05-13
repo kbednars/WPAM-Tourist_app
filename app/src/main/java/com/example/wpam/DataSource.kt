@@ -99,7 +99,6 @@ class DataSource{
             list.add(
 
                 BlogPost(
-
                     "Work Life Balance for Software Developers",
 
                     "What kind of hobbies do software developers have? It sounds like many software developers don't have a lot of hobbies and choose to focus on work. Is that a good idea?",

@@ -1,6 +1,7 @@
 package com.example.wpam.ui.home
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,9 @@ import com.example.wpam.PostRecyclerAdapter
 import com.example.wpam.R
 import com.example.wpam.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class HomeFragment : Fragment() {
-
     private lateinit var homeViewModel: HomeViewModel
 
     private lateinit var blogAdapter: PostRecyclerAdapter
@@ -25,31 +26,40 @@ class HomeFragment : Fragment() {
 
     private lateinit var scrollListener: RecyclerView.OnScrollListener
 
+    private lateinit var linLayoutManager: LinearLayoutManager
+
+
+
+    private lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
+            activity?.let { ViewModelProviders.of(it).get(HomeViewModel::class.java) }!!
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val recyclerView: RecyclerView = root.findViewById(R.id.recycler_view)
+        recyclerView= root.findViewById(R.id.recycler_view)
+        linLayoutManager = LinearLayoutManager(activity)
+
         recyclerView.apply{
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = linLayoutManager
             val topSpacingDecoration = TopSpacingItemDecoration(30)
             addItemDecoration(topSpacingDecoration)
-            blogAdapter = PostRecyclerAdapter()
+            blogAdapter = homeViewModel.blogAdapter
             adapter = blogAdapter
         }
+
+
 
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 Log.i("MyTAG", "STATE STATE")
 
-                val layoutManager = LinearLayoutManager::class.java.cast(recyclerView.layoutManager)
-                val totalItemCount = layoutManager!!.itemCount
-                val lastVisible = layoutManager!!.findLastVisibleItemPosition()
+                val totalItemCount = linLayoutManager!!.itemCount
+                val lastVisible = linLayoutManager!!.findLastVisibleItemPosition()
 
                 Log.i("MyTAG", totalItemCount.toString())
                 Log.i("MyTAG", lastVisible.toString())
@@ -64,9 +74,10 @@ class HomeFragment : Fragment() {
 
         recyclerView.addOnScrollListener(scrollListener)
 
-        lastVisibleItemPosition = LinearLayoutManager(activity).findLastVisibleItemPosition()
+        lastVisibleItemPosition = linLayoutManager.findLastVisibleItemPosition()
 
-        addDataSet()
+        if(blogAdapter.getItemCount() == 0)
+            addDataSet()
         return root
     }
 
@@ -80,14 +91,14 @@ class HomeFragment : Fragment() {
         blogAdapter.addList(data.subList(2,5))
     }
 
-     private fun initRecyclerView(){
-         recycler_view.apply{
-             layoutManager = LinearLayoutManager(activity)
-             blogAdapter = PostRecyclerAdapter()
-             adapter = blogAdapter
-         }
-     }
 
+    override fun onPause() {
+        super.onPause()
+        homeViewModel?.linearLayoutManager.value = linLayoutManager.onSaveInstanceState()
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        linLayoutManager.onRestoreInstanceState(homeViewModel?.linearLayoutManager.value)
+    }
 }
