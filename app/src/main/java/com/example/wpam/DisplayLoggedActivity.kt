@@ -14,9 +14,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.wpam.callbacks.PlacesPhotoPathCallback
+import com.example.wpam.callbacks.UsersByNameCallback
 import com.example.wpam.cameraUtility.CameraUtility
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
+import com.example.wpam.locationUtility.LocationUtility
+import com.example.wpam.model.UserData
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_display_logged.*
@@ -32,6 +36,8 @@ class DisplayLoggedActivity : AppCompatActivity() {
     private var pictureJustChanged = false
     val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 42
+
+
 
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
@@ -83,6 +89,30 @@ class DisplayLoggedActivity : AppCompatActivity() {
         takePictureButton.setOnClickListener{
             CameraUtility.runCamera(this)
         }
+
+
+
+        LocationUtility.initLocationSerive(this)
+
+        val googleMapsButton = findViewById<View>(R.id.googleMapsButton) as Button
+        googleMapsButton.setOnClickListener{
+            LocationUtility.getMarkers()
+            FirestoreUtility.markerMarkVisited("Barbakan w Warszawie")
+            FirestoreUtility.getUsersByName("marC", object: UsersByNameCallback{
+                override fun onCallback(list: MutableList<UserData>) {
+                    list.forEach {
+                        Log.d("getUserByName CB: ", it.name)
+                    }
+                }
+            })
+            FirestoreUtility.getUserPlacePhotoPaths(object: PlacesPhotoPathCallback {
+                override fun onCallback(list: MutableList<String>) {
+                    Log.d("userPhotoPath:", list.toString())
+                }
+            })
+            FirestoreUtility.addFriendAccount("YKk51PhrsEabwPECRlFT7Zj19Nq1")
+        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -175,6 +205,8 @@ class DisplayLoggedActivity : AppCompatActivity() {
             pictureJustChanged = true
         }
     }
+
+
 
     companion object {
         const val TAG = "DisplayLoggedActivity"

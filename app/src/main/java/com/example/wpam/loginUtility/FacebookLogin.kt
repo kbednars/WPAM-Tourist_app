@@ -47,6 +47,8 @@ class FacebookLogin(
             }
             .addOnSuccessListener { result->
                 val email = result.user!!.email
+                val uid = result.user!!.uid
+                Log.d(MainActivity.TAG_facebook,"Facebook login with user:"+uid)
                 Toast.makeText(activity, "You logged with email: "+email, Toast.LENGTH_LONG).show()
             }
     }
