@@ -101,6 +101,12 @@ object FirestoreUtility{
         }
     }
 
+    fun getUserPhotoCollection(userUID:String, onComplete: (MutableList<PlacePhoto>) -> Unit) {
+        firestoreInstance.collection("usersData").document(userUID).collection("placesPhotos").get().addOnSuccessListener {
+            onComplete(it.toObjects(PlacePhoto::class.java))
+        }
+    }
+
     suspend fun getFriendsPlacePhotoPaths(firstPhoto: Int, photoNumber: Int, friendsPhotoCallback: FriendsPhotoCallback){
         var friendsPhotosList: MutableList<Pair<UserData?, PlacePhoto>> = mutableListOf()
        val job = GlobalScope.launch {

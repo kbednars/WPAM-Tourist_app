@@ -43,8 +43,6 @@ class DisplayLoggedActivity : AppCompatActivity() {
     val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 42
 
-
-
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
@@ -105,7 +103,7 @@ class DisplayLoggedActivity : AppCompatActivity() {
         val googleMapsButton = findViewById<View>(R.id.googleMapsButton) as Button
         googleMapsButton.setOnClickListener{
             LocationUtility.getMarkers(object: GetMarkersCallback{
-                override fun onCallback(list: MutableList<MarkerInfo>) {
+                override fun onCallback(list: MutableList<Pair<MarkerInfo, String>>) {
                     Log.d("getMarkers: ", list.toString())
                 }
             })
@@ -126,7 +124,7 @@ class DisplayLoggedActivity : AppCompatActivity() {
             GlobalScope.launch {
                 FirestoreUtility.getFriendsPlacePhotoPaths(0, 10, object : FriendsPhotoCallback {
                     override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
-                        Log.d("FriendsPhtos:", list.toString())
+                        Log.d("FriendsPhtos:", list.get(0).first!!.name)
                     }
                 })
             }
