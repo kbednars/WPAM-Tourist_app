@@ -22,7 +22,7 @@ object FirestoreUtility{
     fun initCurrentUserDataIfFirstTime(onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = UserData(FirebaseAuth.getInstance().currentUser?.displayName ?: "",
+                val newUser = UserData(FirebaseAuth.getInstance().currentUser?.displayName ?:"", FirebaseAuth.getInstance().currentUser!!.uid,
                     "", "", mutableListOf(),0)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()
@@ -58,14 +58,14 @@ object FirestoreUtility{
             Log.d("FirestoreUtility", "placePhotoPath is blank")
     }
 
-    fun getCurrentUserPlacePhotoPaths(photoPathCallback: PlacesPhotoPathCallback){
+    fun getCurrentUserPlacePhotoPaths(onComplete: (MutableList<PlacePhoto>) -> Unit){
         currentUserDocRef.collection("placesPhotos").get().addOnCompleteListener{task->
             if (task.isSuccessful) {
                 val list:MutableList<PlacePhoto> = mutableListOf()
                 for (document in task.result!!) {
                     list.add(document.toObject(PlacePhoto::class.java))
                 }
-                photoPathCallback.onCallback(list)
+                onComplete(list)
             }
         }
     }
@@ -95,19 +95,39 @@ object FirestoreUtility{
             }
     }
 
-    fun getCurrentUserPhotoCollection(onComplete: (MutableList<PlacePhoto>) -> Unit) {
-        currentUserDocRef.collection("placesPhotos").get().addOnSuccessListener {
-            onComplete(it.toObjects(PlacePhoto::class.java))
+    fun getCurrentUserPhotoCollection(firstPhoto: Int, photoNumber: Int, photoCallback: PhotoCallback) {
+        currentUserDocRef.collection("placesPhotos").get().addOnCompleteListener{task->
+            if(task.isSuccessful){
+                var list = task.result!!.toObjects(PlacePhoto::class.java)
+                list = list.toList().subList( firstPhoto, if (firstPhoto + photoNumber < list.size) firstPhoto + photoNumber else list.size).toMutableList()
+                photoCallback.onCallback(list)
+            }
+
         }
     }
 
-    fun getUserPhotoCollection(userUID:String, onComplete: (MutableList<PlacePhoto>) -> Unit) {
-        firestoreInstance.collection("usersData").document(userUID).collection("placesPhotos").get().addOnSuccessListener {
-            onComplete(it.toObjects(PlacePhoto::class.java))
+    fun getUserPhotoCollection(userUID:String,firstPhoto: Int, photoNumber: Int, photoCallback: PhotoCallback) {
+        firestoreInstance.collection("usersData").document(userUID).collection("placesPhotos").get().addOnCompleteListener{task->
+            if(task.isSuccessful){
+                var list = task.result!!.toObjects(PlacePhoto::class.java)
+                list = list.toList().subList( firstPhoto, if (firstPhoto + photoNumber < list.size) firstPhoto + photoNumber else list.size).toMutableList()
+                photoCallback.onCallback(list)
+            }
+
         }
     }
 
-    suspend fun getFriendsPlacePhotoPaths(firstPhoto: Int, photoNumber: Int, friendsPhotoCallback: FriendsPhotoCallback){
+    fun getFriendsPlacePhotoPaths(firstPhoto: Int, photoNumber: Int,friendsPhotoCallback: FriendsPhotoCallback){
+        GlobalScope.launch {
+            getFriendsPlacePhotoPathsSync(firstPhoto, photoNumber, object : FriendsPhotoCallback {
+                override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
+                    friendsPhotoCallback.onCallback(list)
+                }
+            })
+        }
+    }
+
+    suspend fun getFriendsPlacePhotoPathsSync(firstPhoto: Int, photoNumber: Int, friendsPhotoCallback: FriendsPhotoCallback){
         var friendsPhotosList: MutableList<Pair<UserData?, PlacePhoto>> = mutableListOf()
        val job = GlobalScope.launch {
             val user = getFriendList()
@@ -138,11 +158,12 @@ object FirestoreUtility{
     fun getUsersByName(name:String, getUsersCallback: GetUsersCallback){
         firestoreInstance.collection("usersData").get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val list:MutableList<UserData> = mutableListOf()
+                var list:MutableList<UserData> = mutableListOf()
                 for (document in task.result!!) {
                     if(document.toObject(UserData::class.java).name.contains(name, ignoreCase = true))
                         list.add(document.toObject(UserData::class.java))
                 }
+                list = list.toList().sortedBy { it.name }.toMutableList()
                 getUsersCallback.onCallback(list)
             }
         }
@@ -203,11 +224,12 @@ object FirestoreUtility{
         })
     }
 
-    fun getUsersRanking(getUsersCallback: GetUsersCallback){
+    fun getUsersRanking(firstUser: Int, userNumber: Int, getUsersCallback: GetUsersCallback){
         firestoreInstance.collection("usersData").get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 var list:MutableList<UserData> = task.result!!.toObjects(UserData::class.java)
                 list = list.toList().sortedByDescending { it.points }.toMutableList()
+                list = list.toList().subList( firstUser, if (firstUser + userNumber < list.size) firstUser + userNumber else list.size).toMutableList()
                 getUsersCallback.onCallback(list)
             }
         }

@@ -14,10 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.wpam.callbacks.FriendsPhotoCallback
-import com.example.wpam.callbacks.GetMarkersCallback
-import com.example.wpam.callbacks.PlacesPhotoPathCallback
-import com.example.wpam.callbacks.GetUsersCallback
+import com.example.wpam.callbacks.*
 import com.example.wpam.cameraUtility.CameraUtility
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
@@ -114,23 +111,23 @@ class DisplayLoggedActivity : AppCompatActivity() {
                     }
                 }
             })
-            FirestoreUtility.getCurrentUserPlacePhotoPaths(object: PlacesPhotoPathCallback {
+            FirestoreUtility.getCurrentUserPhotoCollection(0,10,object: PhotoCallback{
                 override fun onCallback(list: MutableList<PlacePhoto>) {
-                    Log.d("userPlacePhotoPath:", list.toString())
+                    Log.d("CurrentUserPhotos:", list.toString())
                 }
             })
             FirestoreUtility.addFriendAccount("YKk51PhrsEabwPECRlFT7Zj19Nq1")
             FirestoreUtility.addPlacePhoto("cos", "Pałac Kultury i Nauki", "fajnie tam bylo")
-            GlobalScope.launch {
-                FirestoreUtility.getFriendsPlacePhotoPaths(0, 10, object : FriendsPhotoCallback {
-                    override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
-                        Log.d("FriendsPhtos:", list.get(0).first!!.name)
-                    }
-                })
-            }
+
+            FirestoreUtility.getFriendsPlacePhotoPaths(0,10,object : FriendsPhotoCallback{
+                override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
+                    Log.d("FriendsPhotos: ", list.toString())
+                }
+            })
+
             FirestoreUtility.addLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
             FirestoreUtility.deleteLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
-            FirestoreUtility.getUsersRanking(object: GetUsersCallback{
+            FirestoreUtility.getUsersRanking(0,5, object: GetUsersCallback{
                 override fun onCallback(list: MutableList<UserData>) {
                     Log.d("Callback Ranking:", list.toString())
                 }
@@ -163,7 +160,7 @@ class DisplayLoggedActivity : AppCompatActivity() {
                 editNameField.setText(user.name)
                 editDescriptionField.setText(user.description)
                 print(user.profilePicturePath)
-                if (!pictureJustChanged && user.profilePicturePath != null)
+                if (!pictureJustChanged && user.profilePicturePath!!.isNotBlank())
                     Glide.with(this)
                         .load(StorageUtility.pathToReference(user.profilePicturePath))
                         .apply(RequestOptions()
