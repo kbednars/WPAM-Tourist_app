@@ -1,4 +1,4 @@
-package com.example.wpam
+package com.example.wpam.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.wpam.R
 import com.example.wpam.model.BlogPost
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
@@ -14,7 +15,11 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private var items: List<BlogPost> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return BlogViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.layout_blog_list_item,
+                parent,
+                false
+            )
         )
     }
 
@@ -36,7 +41,6 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     }
 
     fun addList(blogList: List<BlogPost>){
-
         items = items + blogList;
     }
 

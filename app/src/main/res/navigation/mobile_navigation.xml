@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/navigation_ranking"
-        android:name="com.example.wpam.ui.notifications.NotificationsFragment"
+        android:name="com.example.wpam.ui.notifications.RankingFragment"
         android:label="@string/title_ranking"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_ranking" />
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.wpam.ui.profile.ProfileFragment"
@@ -30,5 +30,15 @@
     <fragment
         android:id="@+id/navigation_get_points"
         android:name="com.example.wpam.ui.points.GetPointsFragment"
-        android:label="@string/title_get_points" />
+        android:label="@string/title_get_points" >
+        <action
+            android:id="@+id/action_navigation_get_points_to_search"
+            app:destination="@id/search"
+            app:popUpTo="@id/navigation_get_points" />
+    </fragment>
+    <fragment
+        android:id="@+id/search"
+        android:name="com.example.wpam.ui.search.Search"
+        android:label="search_fragment"
+        tools:layout="@layout/search_fragment" />
 </navigation>
