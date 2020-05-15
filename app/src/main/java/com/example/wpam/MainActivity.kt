@@ -26,13 +26,13 @@ import kotlinx.android.synthetic.main.dialog_reset_password.view.*
 const val EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"
 
 class MainActivity : AppCompatActivity() {
-    var firebaseAuth: FirebaseAuth?=null
-    var callbackManager: CallbackManager?=null
+    lateinit var firebaseAuth: FirebaseAuth
+    lateinit var callbackManager: CallbackManager
     val RC_SIGN_IN: Int = 1
     lateinit var googleLogin: GoogleLogin
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser != null && firebaseUser.isEmailVerified) {
+        if (firebaseUser != null && firebaseUser.isEmailVerified || firebaseUser!= null && firebaseUser.providerData.get(1).providerId == "facebook.com") {
             val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
             finish()
@@ -47,17 +47,17 @@ class MainActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
 
         // Configure Google and Facebook Sign In
-        googleLogin = GoogleLogin(firebaseAuth!!,this, RC_SIGN_IN)
-        FacebookLogin(firebaseAuth!!,this, callbackManager!!)
+        googleLogin = GoogleLogin(firebaseAuth,this, RC_SIGN_IN)
+        FacebookLogin(firebaseAuth,this, callbackManager)
 
         val signInButton = findViewById<View>(R.id.signInButton) as Button
         signInButton.setOnClickListener {
             if (emailField.text.isNotEmpty() && passwordField.text.isNotEmpty()) {
-                firebaseAuth!!.signInWithEmailAndPassword(emailField.text.toString(),passwordField.text.toString()).addOnCompleteListener(this) { task ->
+                firebaseAuth.signInWithEmailAndPassword(emailField.text.toString(),passwordField.text.toString()).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         FirestoreUtility.initCurrentUserDataIfFirstTime {
                             // Sign in success, update UI with the signed-in user's information
-                            if (firebaseAuth!!.currentUser!!.isEmailVerified) {
+                            if (firebaseAuth.currentUser!!.isEmailVerified) {
                                 Log.d(TAG_emailLogin, "signInWithEmail:success")
                                 val intent = Intent(this, HomePage::class.java)
                                 startActivity(intent)
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 passwordField.text.clear()
-                                firebaseAuth!!.signOut()
+                                firebaseAuth.signOut()
                             }
                         }
                     } else {
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
             val emailResetEmail = mDialogView.findViewById<EditText>(R.id.emailResetField)
             val mAlertDialog = mBuilder.show()
             mDialogView.sendResetPassButton.setOnClickListener{
-                firebaseAuth!!.sendPasswordResetEmail(emailResetEmail.text.toString()).addOnCompleteListener(this) { task ->
+                firebaseAuth.sendPasswordResetEmail(emailResetEmail.text.toString()).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(baseContext, "E-mail with password reset link sent to:${emailResetEmail.text}",
                             Toast.LENGTH_SHORT).show()
@@ -120,16 +120,16 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        firebaseAuth!!.addAuthStateListener(this.authStateListener)
+        firebaseAuth.addAuthStateListener(this.authStateListener)
     }
 
     override fun onStop() {
         super.onStop()
-        firebaseAuth!!.removeAuthStateListener(this.authStateListener)
+        firebaseAuth.removeAuthStateListener(this.authStateListener)
     }
 
     fun loggedSuc(){
-        startActivity(Intent(this@MainActivity, DisplayLoggedActivity::class.java).apply {
+        startActivity(Intent(this@MainActivity, HomePage::class.java).apply {
             putExtra(EXTRA_MESSAGE, "Zalogowano")
         })
         finish()
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        callbackManager!!.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             googleLogin.handleGoogleResult (task)

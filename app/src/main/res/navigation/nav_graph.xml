@@ -9,7 +9,8 @@
         android:id="@+id/mainActivity"
         android:name="com.example.wpam.MainActivity"
         android:label="activity_main"
-        tools:layout="@layout/activity_main" >
+        tools:layout="@layout/activity_main"
+        app:startDestination="@id/action_mainActivity_to_displayMessageActivity2">
         <action
             android:id="@+id/action_mainActivity_to_displayMessageActivity2"
             app:destination="@id/displayMessageActivity2"
