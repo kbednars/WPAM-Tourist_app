@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.wpam.DataSource
 import com.example.wpam.adapters.PostRecyclerAdapter
 import com.example.wpam.R
 import com.example.wpam.TopSpacingItemDecoration
@@ -19,7 +18,6 @@ import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.model.BlogPost
 import com.example.wpam.model.PlacePhoto
 import com.example.wpam.model.UserData
-import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
@@ -49,13 +47,18 @@ class HomeFragment : Fragment() {
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+
+
                 val totalItemCount = linLayoutManager.itemCount
-                val lastVisible = linLayoutManager.findLastVisibleItemPosition()
+                val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
 
                 if (totalItemCount == lastVisible + 1) {
+                    recyclerView.removeOnScrollListener(scrollListener)
                     addDataSet(0, totalItemCount + 1)
-                    blogAdapter.notifyDataSetChanged()
                 }
+
+                blogAdapter.notifyDataSetChanged()
+
             }
 
         }
@@ -63,40 +66,30 @@ class HomeFragment : Fragment() {
         recyclerView.addOnScrollListener(scrollListener)
         if(blogAdapter.getItemCount() == 0)
             addDataSet(0, 1)
-        blogAdapter.notifyDataSetChanged()
         return root
     }
 
     private fun addDataSet(begin : Int, end : Int) {
+
         val data = ArrayList<BlogPost>()
-        /*GlobalScope.async {
-            FirestoreUtility.getFriendsPlacePhotoPaths(begin, end, object : FriendsPhotoCallback {
-                override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
-                    Log.i("FriendsPhtos:", list.toString())
-                    for(photos in list){
-                        var blogPost = BlogPost(photos.second.name, photos.second.description, photos.second.placePhotoPath, photos.first!!.name)
-                        data.add(blogPost)
-                    }
-                    blogAdapter.addList(data)
-                }
-            })
-        }*/
 
-       FirestoreUtility.getUsersRanking(object: GetUsersCallback {
-            override fun onCallback(list: MutableList<UserData>) {
-                //Log.i("FriendsPhtos:", list.toString())
-                Log.i("FriendsPhtos:", list.size.toString())
-
+        FirestoreUtility.getFriendsPlacePhotoPaths(begin, end, object : FriendsPhotoCallback {
+            override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.name, photos.description, photos.profilePicturePath, photos.name)
+                    var blogPost = BlogPost(photos.second.name, photos.second.description, photos.second.placePhotoPath, photos.first!!.name, photos.first!!.uid )
                     data.add(blogPost)
-                    Log.i("FriendsPhtos:", blogPost.toString())
                 }
-                blogAdapter.addList(data)
-                blogAdapter.notifyDataSetChanged()
+                blogAdapter.submitList(data)
+
+                recyclerView.addOnScrollListener(scrollListener)
+
+                activity?.runOnUiThread({
+                    blogAdapter.notifyDataSetChanged()})
             }
         })
-       blogAdapter.notifyDataSetChanged()
+        blogAdapter.notifyDataSetChanged()
+
+
     }
 
 

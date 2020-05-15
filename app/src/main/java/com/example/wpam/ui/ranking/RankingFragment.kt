@@ -9,13 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.wpam.DataSource
 import com.example.wpam.R
 import com.example.wpam.TopSpacingItemDecoration
 import com.example.wpam.adapters.RankingRecyclerAdapter
 import com.example.wpam.callbacks.GetUsersCallback
 import com.example.wpam.databaseUtility.FirestoreUtility
-import com.example.wpam.model.BlogPost
 import com.example.wpam.model.RankingItem
 import com.example.wpam.model.UserData
 
@@ -50,33 +48,39 @@ class RankingFragment : Fragment() {
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+
+                recyclerView.removeOnScrollListener(scrollListener)
+                Log.i("MyTAG", "Se jestem w lisynerze")
                 val totalItemCount = linLayoutManager.itemCount
                 val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
-                val firstVisible = linLayoutManager.findFirstCompletelyVisibleItemPosition()
                 if (totalItemCount == lastVisible + 1) {
-                    addDataSet()
+                    addDataSet(0, totalItemCount + 2)
                 }
+
+                recyclerView.addOnScrollListener(scrollListener)
             }
+
 
         }
 
         recyclerView.addOnScrollListener(scrollListener)
         if(rankingAdapter.getItemCount() == 0)
-            addDataSet()
+            addDataSet(0,2)
 
         return root
     }
 
-    private fun addDataSet(){
+    private fun addDataSet(begin : Int, end : Int){
         val data = ArrayList<RankingItem>()
-        FirestoreUtility.getUsersRanking(object: GetUsersCallback {
+        FirestoreUtility.getUsersRanking(begin, end, object: GetUsersCallback {
             override fun onCallback(list: MutableList<UserData>) {
                 for(photos in list){
                     var rankingItem = RankingItem(photos.name, photos.points.toString(), photos.profilePicturePath)
                     data.add(rankingItem)
                 }
-                rankingAdapter.addList(data)
+                rankingAdapter.submitList(data)
                 rankingAdapter.notifyDataSetChanged()
+
             }
         })
     }
