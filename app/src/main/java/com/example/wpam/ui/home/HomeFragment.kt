@@ -54,10 +54,9 @@ class HomeFragment : Fragment() {
 
                 if (totalItemCount == lastVisible + 1) {
                     recyclerView.removeOnScrollListener(scrollListener)
-                    addDataSet(0, totalItemCount + 1)
+                    addDataSet(0, totalItemCount + 2)
                 }
 
-                blogAdapter.notifyDataSetChanged()
 
             }
 
@@ -65,7 +64,7 @@ class HomeFragment : Fragment() {
 
         recyclerView.addOnScrollListener(scrollListener)
         if(blogAdapter.getItemCount() == 0)
-            addDataSet(0, 1)
+            addDataSet(0, 2)
         return root
     }
 
@@ -87,7 +86,6 @@ class HomeFragment : Fragment() {
                     blogAdapter.notifyDataSetChanged()})
             }
         })
-        blogAdapter.notifyDataSetChanged()
 
 
     }
