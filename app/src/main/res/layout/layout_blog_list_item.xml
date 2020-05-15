@@ -97,25 +97,21 @@
                 />
 
 
-
             <TextView
+
+                android:id="@+id/blog_author"
 
                 android:layout_width="match_parent"
 
                 android:layout_height="wrap_content"
 
-                android:id="@+id/blog_author"
+                android:layout_marginTop="10dp"
 
                 android:text="Mitch Tabian"
 
                 android:textSize="15sp"
 
-                android:layout_marginTop="10dp"
-
                 />
-
-
-
 
 
         </LinearLayout>

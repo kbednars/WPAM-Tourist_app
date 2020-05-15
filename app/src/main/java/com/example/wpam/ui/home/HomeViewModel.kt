@@ -4,10 +4,8 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.wpam.DataSource
-import com.example.wpam.PostRecyclerAdapter
+import com.example.wpam.adapters.PostRecyclerAdapter
 
 class HomeViewModel : ViewModel() {
 
@@ -23,7 +21,8 @@ class HomeViewModel : ViewModel() {
 
 
 
-    public var blogAdapter: PostRecyclerAdapter = PostRecyclerAdapter()
+    public var blogAdapter: PostRecyclerAdapter =
+        PostRecyclerAdapter()
 
 
 

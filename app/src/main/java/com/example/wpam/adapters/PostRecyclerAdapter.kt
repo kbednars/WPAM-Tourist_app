@@ -1,11 +1,15 @@
-package com.example.wpam
+package com.example.wpam.adapters
 
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.wpam.R
 import com.example.wpam.model.BlogPost
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
@@ -14,7 +18,11 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private var items: List<BlogPost> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return BlogViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.layout_blog_list_item,
+                parent,
+                false
+            )
         )
     }
 
@@ -36,7 +44,6 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     }
 
     fun addList(blogList: List<BlogPost>){
-
         items = items + blogList;
     }
 
@@ -46,6 +53,7 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         val blogImage = itemView.blog_image
         val blogTitle = itemView.blog_title
         val blogAuthor = itemView.blog_author
+
 
         fun bind(blogPost: BlogPost) {
             blogTitle.setText(blogPost.title)
@@ -58,7 +66,26 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             Glide.with(itemView.context)
                 .applyDefaultRequestOptions(requestOptions)
                 .load(blogPost.image).into(blogImage)
+
+            blogTitle.setOnClickListener {
+
+                Log.i("MyTAG", "TITLE CLICKED " + blogTitle.text)
+            }
+
+            blogAuthor.setOnClickListener {
+                Log.i("MyTAG", "Author: " + blogAuthor.text)
+                val navController = itemView?.findNavController()
+
+
+                val bundle = Bundle()
+                bundle.putString("notificationId", blogAuthor.text.toString())
+                navController?.navigate(R.id.action_navigation_home_to_userListFragmet, bundle)
+            }
+
+
         }
+
     }
+
 
 }

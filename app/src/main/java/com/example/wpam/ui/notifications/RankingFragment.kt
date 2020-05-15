@@ -1,21 +1,26 @@
-package com.example.wpam.ui.home
+package com.example.wpam.ui.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wpam.DataSource
-import com.example.wpam.adapters.PostRecyclerAdapter
 import com.example.wpam.R
 import com.example.wpam.TopSpacingItemDecoration
+import com.example.wpam.adapters.PostRecyclerAdapter
+import com.example.wpam.adapters.RankingRecyclerAdapter
 
-class HomeFragment : Fragment() {
-    private lateinit var homeViewModel: HomeViewModel
-    private lateinit var blogAdapter: PostRecyclerAdapter
+class RankingFragment : Fragment() {
+
+    private lateinit var rankingViewModel: RankingViewModel
+
+    private lateinit var rankingAdapter: RankingRecyclerAdapter
     private lateinit var scrollListener: RecyclerView.OnScrollListener
     private lateinit var linLayoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
@@ -25,17 +30,18 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel = activity?.let { ViewModelProviders.of(it).get(HomeViewModel::class.java) }!!
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        recyclerView= root.findViewById(R.id.recycler_view)
+        rankingViewModel =
+            activity?.let { ViewModelProviders.of(it).get(RankingViewModel::class.java) }!!
+        val root = inflater.inflate(R.layout.fragment_ranking, container, false)
+        recyclerView= root.findViewById(R.id.ranking_recycler_view)
         linLayoutManager = LinearLayoutManager(activity)
 
         recyclerView.apply{
             layoutManager = linLayoutManager
             val topSpacingDecoration = TopSpacingItemDecoration(30)
             addItemDecoration(topSpacingDecoration)
-            blogAdapter = homeViewModel.blogAdapter
-            adapter = blogAdapter
+            rankingAdapter = rankingViewModel.rankingAdapter
+            adapter = rankingAdapter
         }
 
         scrollListener = object : RecyclerView.OnScrollListener() {
@@ -45,37 +51,34 @@ class HomeFragment : Fragment() {
                 val lastVisible = linLayoutManager.findLastVisibleItemPosition()
 
                 if (totalItemCount == lastVisible + 1) {
-                    addDataSet2()
-                    blogAdapter.notifyDataSetChanged()
+                    addDataSet()
+                    rankingAdapter.notifyDataSetChanged()
                 }
             }
 
         }
 
         recyclerView.addOnScrollListener(scrollListener)
-        if(blogAdapter.getItemCount() == 0)
+        if(rankingAdapter.getItemCount() == 0)
             addDataSet()
+
         return root
     }
 
     private fun addDataSet(){
-        val data = DataSource.createDataSet()
-        blogAdapter.addList(data)
-    }
-
-    private fun addDataSet2(){
-        val data = DataSource.createDataSet()
-        blogAdapter.addList(data.subList(2,5))
+        val data = DataSource.createDataSetRanking()
+        rankingAdapter.addList(data)
     }
 
 
     override fun onPause() {
         super.onPause()
-        homeViewModel.linearLayoutManager.value = linLayoutManager.onSaveInstanceState()
+        rankingViewModel.linearLayoutManager.value = linLayoutManager.onSaveInstanceState()
     }
 
     override fun onResume() {
         super.onResume()
-        linLayoutManager.onRestoreInstanceState(homeViewModel.linearLayoutManager.value)
+        linLayoutManager.onRestoreInstanceState(rankingViewModel.linearLayoutManager.value)
     }
+
 }

@@ -51,9 +51,11 @@ class HomePage : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    override fun onSupportNavigateUp() = findNavController(R.id.nav_host_fragment).navigateUp()
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
+        //menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
@@ -76,7 +78,8 @@ class HomePage : AppCompatActivity() {
     }
 
     private fun openNotifications() {
-        TODO("Not yet implemented")
+        val navController = findNavController(R.id.nav_host_fragment)
+        navController.navigate(R.id.search)
     }
 
     private fun openSearch() {
