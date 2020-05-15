@@ -1,5 +1,6 @@
 package com.example.wpam.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
+import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
 import com.example.wpam.model.RankingItem
 import kotlinx.android.synthetic.main.layout_ranking_list_item.view.*
@@ -30,9 +32,9 @@ class RankingRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
-
             is RankingViewHolder ->{
-                holder.bind(items.get(position), position)
+                holder.bind(items[position], position)
+                Log.i("MyTAG", "Se jestem w adapterze")
             }
         }
     }
@@ -56,15 +58,20 @@ class RankingRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         fun bind(rankingItem: RankingItem, position: Int) {
             rankingPoints.setText(rankingItem.points + " pts")
             rankingProfileName.setText(rankingItem.username)
-            rankingPosition.setText(position.toString())
+            rankingPosition.setText((position +1).toString())
 
             val requestOptions = RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
-                .placeholder(R.drawable.ic_launcher_background)
 
-            Glide.with(itemView.context)
-                .applyDefaultRequestOptions(requestOptions)
-                .load(rankingItem.image).into(rankingProfileImage)
+            if(rankingItem.image!!.isNotBlank()) {
+                Glide.with(itemView.context)
+                    .applyDefaultRequestOptions(requestOptions)
+                    .load(StorageUtility.pathToReference(rankingItem.image))
+                    .into(rankingProfileImage)
+            }
+            itemView.setOnClickListener {
+                Log.i("MyTAG", "TITLE CLICKED " + rankingItem.username.toString())
+            }
         }
     }
 

@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/navigation_ranking"
-        android:name="com.example.wpam.ui.notifications.RankingFragment"
+        android:name="com.example.wpam.ui.ranking.RankingFragment"
         android:label="@string/title_ranking"
         tools:layout="@layout/fragment_ranking" />
     <fragment
@@ -37,14 +37,14 @@
         android:label="@string/title_get_points" >
         <action
             android:id="@+id/action_navigation_get_points_to_search"
-            app:destination="@id/search"
+            app:destination="@id/navigation_landmark_list"
             app:popUpTo="@id/navigation_get_points" />
     </fragment>
     <fragment
-        android:id="@+id/search"
-        android:name="com.example.wpam.ui.search.Search"
-        android:label="search_fragment"
-        tools:layout="@layout/search_fragment" />
+        android:id="@+id/navigation_landmark_list"
+        android:name="com.example.wpam.ui.landmarkList.LandmarkListFragment"
+        android:label="Landmark List"
+        tools:layout="@layout/fragment_landmark_list" />
     <fragment
         android:id="@+id/userListFragmet"
         android:name="com.example.wpam.ui.user_list.UserListFragmet"
