@@ -61,7 +61,7 @@ object LocationUtility {
     }
 
     fun getMarkers(getMarkersCallback: GetMarkersCallback){
-        FirestoreUtility.getCurrentUserPhotoCollection { col ->
+        FirestoreUtility.getCurrentUserPlacePhotoPaths { col ->
             if (LocationUtility::actualCity.isInitialized) {
                 FirestoreUtility.getCityMarkers(object : MarkerCallback {
                     override fun onCallback(list: MutableList<MarkerInfo>) {
