@@ -7,6 +7,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.example.wpam.callbacks.GetMarkersCallback
 import com.example.wpam.callbacks.MarkerCallback
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.model.MarkerInfo
@@ -18,7 +19,8 @@ object LocationUtility {
     private lateinit var lastLocation: Location
     private lateinit var actualCity: String
     private lateinit var actualMarkersList: MutableList<MarkerInfo>
-    private var actualDistanceToMakers = mutableMapOf<String, Double>()
+    private lateinit var actualDistanceToMakers: MutableList<Pair<MarkerInfo, Double>>
+    private var choosedMarker:MarkerInfo? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private const val markerDistanceToTakePhoto = 0.05
 
@@ -28,8 +30,8 @@ object LocationUtility {
             Log.d("LocationUtility:","location not granted")
         }
         val mLocationRequest: LocationRequest = LocationRequest.create()
-        mLocationRequest.setInterval(15000)
-        mLocationRequest.setFastestInterval(5000)
+        mLocationRequest.setInterval(1000)
+        mLocationRequest.setFastestInterval(500)
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         val mLocationCallback: LocationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
@@ -42,20 +44,10 @@ object LocationUtility {
                         fusedLocationClient.lastLocation.addOnSuccessListener(activity){ location : Location? ->
                             if (location != null){
                                 lastLocation = location
-
                                 val gcd = Geocoder(activity, Locale.getDefault())
                                 val addresses: List<Address> = gcd.getFromLocation(location.latitude, location.longitude, 1)
                                 if (addresses.size > 0) {
-                                    Log.d("LocationUtility", "adress found: "+addresses[0].getLocality())
                                     actualCity = addresses[0].getLocality()
-                                    Log.d("LocationUtility","distance: "+ distance(
-                                        location.latitude,
-                                        location.longitude,
-                                        50.0,
-                                        50.0
-                                    ) +" km")
-                                }else{
-                                    // do your stuff
                                 }
                             }
                         }
@@ -66,8 +58,12 @@ object LocationUtility {
         LocationServices.getFusedLocationProviderClient(activity).requestLocationUpdates(mLocationRequest, mLocationCallback, null)
     }
 
-    fun getMarkers(){
-        FirestoreUtility.getCurrentUser { user ->
+    fun getMarkersCountity():Int{
+        return actualMarkersList.size
+    }
+
+    fun getMarkers(getMarkersCallback: GetMarkersCallback){
+        FirestoreUtility.getCurrentUserPhotoCollection { col ->
             if (LocationUtility::actualCity.isInitialized) {
                 FirestoreUtility.getCityMarkers(object : MarkerCallback {
                     override fun onCallback(list: MutableList<MarkerInfo>) {
@@ -77,12 +73,15 @@ object LocationUtility {
                             val iterator = actualMarkersList.iterator()
                             while (iterator.hasNext()){
                                 val item = iterator.next()
-                                if(user.visitedPlaces.find({it == item.Name})!=null) {
-                                    iterator.remove()
-                                    Log.d("LocationUtility", "marker visited "+item.Name)
+                                for (doc in col){
+                                    if(doc.name == item.Name) {
+                                        iterator.remove()
+                                        Log.d("LocationUtility", "marker visited " + item.Name)
+                                        break
+                                    }
                                 }
                             }
-                            calcDistanceToMarkers()
+                            getMarkersCallback.onCallback(actualMarkersList)
                         } else
                             Log.d("LocationUtility", "city not found")
                     }
@@ -93,24 +92,22 @@ object LocationUtility {
         }
     }
 
+    fun getDistance():MutableList<Pair<MarkerInfo, Double>>{
+        calcDistanceToMarkers()
+        return actualDistanceToMakers
+    }
+
     fun calcDistanceToMarkers(){
         if(LocationUtility::actualMarkersList.isInitialized) {
-            actualDistanceToMakers.clear()
+            actualDistanceToMakers = mutableListOf()
             actualMarkersList.forEach{ marker->
-                actualDistanceToMakers.put(marker.Name,
-                    distance(
+                actualDistanceToMakers.add(Pair(marker, distance(
                         lastLocation.latitude,
                         lastLocation.longitude,
                         marker.positionX.toDouble(),
-                        marker.positionY.toDouble()
-                    )
-                )
+                        marker.positionY.toDouble())))
             }
             Log.d("LocationUtility", actualDistanceToMakers.toString())
-            val markerPair =
-                nearestMarkerPhotoActive()
-            if(markerPair!=null)
-                Log.d("LocationUtility", "nearest marker to take photo"+markerPair.toString())
         }else{
             Log.d("LocationUtility", "actual marker list not initialized")
         }
@@ -120,19 +117,31 @@ object LocationUtility {
         return actualCity
     }
 
-    fun nearestMarkerPhotoActive():Pair<String, Double>?{
-        if(actualDistanceToMakers.isNotEmpty()){
-            val result = actualDistanceToMakers.toList().sortedBy { (_,value)->value }[0]
-            if(result.second.absoluteValue <= markerDistanceToTakePhoto){
-                Log.d("LocationUtility", "distances to markers"+result.toString())
-                return result
+    fun chooseMarkerToTrack(markerToTrack:MarkerInfo){
+        choosedMarker = markerToTrack
+    }
+
+    fun deleteMarkerToTrack(){
+        choosedMarker = null
+    }
+
+    fun getChoosedMarker():MarkerInfo?{
+        return choosedMarker
+    }
+
+    fun choosedMarkerPhotoActive():Pair<Double,Boolean>{
+        if(choosedMarker != null){
+            val distanceToChoosedMarker = distance(lastLocation.latitude, lastLocation.longitude, choosedMarker!!.positionX.toDouble(), choosedMarker!!.positionY.toDouble())
+            if(distanceToChoosedMarker <= markerDistanceToTakePhoto){
+                Log.d("LocationUtility", "distances to choosed marker " + distanceToChoosedMarker.toString())
+                return Pair(distanceToChoosedMarker, true)
             }else{
                 Log.d("LocationUtility", "markers to far from user location")
-                return null
+                return Pair(-1.0, false)
             }
         }else{
-            Log.d("LocationUtility", "marker list is empty")
-            return null
+            Log.d("LocationUtility", "marker to track is null")
+            return Pair(-1.0, false)
         }
     }
 

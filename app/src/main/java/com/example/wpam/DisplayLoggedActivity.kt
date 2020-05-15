@@ -14,16 +14,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.wpam.callbacks.FriendsPhotoCallback
+import com.example.wpam.callbacks.GetMarkersCallback
 import com.example.wpam.callbacks.PlacesPhotoPathCallback
-import com.example.wpam.callbacks.UsersByNameCallback
+import com.example.wpam.callbacks.GetUsersCallback
 import com.example.wpam.cameraUtility.CameraUtility
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.locationUtility.LocationUtility
+import com.example.wpam.model.MarkerInfo
+import com.example.wpam.model.PlacePhoto
 import com.example.wpam.model.UserData
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_display_logged.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
@@ -44,6 +50,7 @@ class DisplayLoggedActivity : AppCompatActivity() {
         if (firebaseUser == null) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 
@@ -61,6 +68,7 @@ class DisplayLoggedActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         loginManager = LoginManager.getInstance()
+        firebaseAuth.addAuthStateListener(this.authStateListener)
 
         val signOutButton = findViewById<View>(R.id.sign_out_button) as Button
         signOutButton.setOnClickListener{
@@ -96,21 +104,39 @@ class DisplayLoggedActivity : AppCompatActivity() {
 
         val googleMapsButton = findViewById<View>(R.id.googleMapsButton) as Button
         googleMapsButton.setOnClickListener{
-            LocationUtility.getMarkers()
-            FirestoreUtility.markerMarkVisited("Barbakan w Warszawie")
-            FirestoreUtility.getUsersByName("marC", object: UsersByNameCallback{
+            LocationUtility.getMarkers(object: GetMarkersCallback{
+                override fun onCallback(list: MutableList<MarkerInfo>) {
+                    Log.d("getMarkers: ", list.toString())
+                }
+            })
+            FirestoreUtility.getUsersByName("marC", object: GetUsersCallback{
                 override fun onCallback(list: MutableList<UserData>) {
-                    list.forEach {
-                        Log.d("getUserByName CB: ", it.name)
+                    list.forEach {user->
+                        Log.d("getUserByName CB: ", user.name)
                     }
                 }
             })
-            FirestoreUtility.getUserPlacePhotoPaths(object: PlacesPhotoPathCallback {
-                override fun onCallback(list: MutableList<String>) {
-                    Log.d("userPhotoPath:", list.toString())
+            FirestoreUtility.getCurrentUserPlacePhotoPaths(object: PlacesPhotoPathCallback {
+                override fun onCallback(list: MutableList<PlacePhoto>) {
+                    Log.d("userPlacePhotoPath:", list.toString())
                 }
             })
             FirestoreUtility.addFriendAccount("YKk51PhrsEabwPECRlFT7Zj19Nq1")
+            FirestoreUtility.addPlacePhoto("cos", "Pałac Kultury i Nauki", "fajnie tam bylo")
+            GlobalScope.launch {
+                FirestoreUtility.getFriendsPlacePhotoPaths(0, 10, object : FriendsPhotoCallback {
+                    override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
+                        Log.d("FriendsPhtos:", list.toString())
+                    }
+                })
+            }
+            FirestoreUtility.addLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
+            FirestoreUtility.deleteLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
+            FirestoreUtility.getUsersRanking(object: GetUsersCallback{
+                override fun onCallback(list: MutableList<UserData>) {
+                    Log.d("Callback Ranking:", list.toString())
+                }
+            })
         }
 
     }
@@ -133,7 +159,6 @@ class DisplayLoggedActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        firebaseAuth.addAuthStateListener(this.authStateListener)
 
         FirestoreUtility.initCurrentUserDataIfFirstTime {
             FirestoreUtility.getCurrentUser { user ->
@@ -152,21 +177,6 @@ class DisplayLoggedActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-        checkAuthState()
-    }
-
-    private fun checkAuthState(){
-        Log.d(TAG, "chceckAuthState: checking authenticitation state")
-        val user = firebaseAuth.currentUser
-        if(user == null){
-            Log.d(TAG, "chceckAuthState: user is null")
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-        }else{
-            Log.d(TAG, "chceckAuthState: user is authenticated")
-        }
     }
 
     override fun onStop() {

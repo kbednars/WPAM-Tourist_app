@@ -25,7 +25,6 @@ class FacebookLogin(
             override fun onSuccess(loginResult: LoginResult) {
                 Log.d(MainActivity.TAG_facebook, "facebook:onSuccess:$loginResult")
                 handleFacebookAccessToken(loginResult.accessToken)
-                activity.loggedSuc()
             }
             override fun onCancel() {
                 Log.d(MainActivity.TAG_facebook, "facebook:onCancel")
@@ -50,6 +49,7 @@ class FacebookLogin(
                 val uid = result.user!!.uid
                 Log.d(MainActivity.TAG_facebook,"Facebook login with user:"+uid)
                 Toast.makeText(activity, "You logged with email: "+email, Toast.LENGTH_LONG).show()
+                activity.loggedSuc()
             }
     }
 }
