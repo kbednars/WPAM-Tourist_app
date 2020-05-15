@@ -10,7 +10,7 @@ class BootActivity : Activity() {
     val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser != null && firebaseUser.isEmailVerified || firebaseUser != null && firebaseUser.providerData.get(1).providerId == "facebook.com") {
-            val intent = Intent(this, HomePage::class.java)
+            val intent = Intent(this, DisplayLoggedActivity::class.java)
             startActivity(intent)
             finish()
         }else{

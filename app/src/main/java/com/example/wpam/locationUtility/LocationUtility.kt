@@ -13,13 +13,11 @@ import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.model.MarkerInfo
 import com.google.android.gms.location.*
 import java.util.*
-import kotlin.math.absoluteValue
 
 object LocationUtility {
     private lateinit var lastLocation: Location
     private lateinit var actualCity: String
-    private lateinit var actualMarkersList: MutableList<MarkerInfo>
-    private lateinit var actualDistanceToMakers: MutableList<Pair<MarkerInfo, Double>>
+    private lateinit var actualMarkersList: MutableList<Pair<MarkerInfo, String>>
     private var choosedMarker:MarkerInfo? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private const val markerDistanceToTakePhoto = 0.05
@@ -69,8 +67,7 @@ object LocationUtility {
                     override fun onCallback(list: MutableList<MarkerInfo>) {
                         if (list.isNotEmpty()) {
                             Log.d("LocationUtility", list.toString())
-                            actualMarkersList = list
-                            val iterator = actualMarkersList.iterator()
+                            var iterator = list.iterator()
                             while (iterator.hasNext()){
                                 val item = iterator.next()
                                 for (doc in col){
@@ -81,6 +78,13 @@ object LocationUtility {
                                     }
                                 }
                             }
+                            iterator = list.iterator()
+                            actualMarkersList = mutableListOf()
+                            while (iterator.hasNext()){
+                                val item = iterator.next()
+                                actualMarkersList.add(Pair(item, distance(lastLocation.latitude, lastLocation.longitude,
+                                item.positionX.toDouble(), item.positionY.toDouble()).toString()))
+                            }
                             getMarkersCallback.onCallback(actualMarkersList)
                         } else
                             Log.d("LocationUtility", "city not found")
@@ -89,27 +93,6 @@ object LocationUtility {
             } else {
                 Log.d("LocationUtility", "actual city not initialized")
             }
-        }
-    }
-
-    fun getDistance():MutableList<Pair<MarkerInfo, Double>>{
-        calcDistanceToMarkers()
-        return actualDistanceToMakers
-    }
-
-    fun calcDistanceToMarkers(){
-        if(LocationUtility::actualMarkersList.isInitialized) {
-            actualDistanceToMakers = mutableListOf()
-            actualMarkersList.forEach{ marker->
-                actualDistanceToMakers.add(Pair(marker, distance(
-                        lastLocation.latitude,
-                        lastLocation.longitude,
-                        marker.positionX.toDouble(),
-                        marker.positionY.toDouble())))
-            }
-            Log.d("LocationUtility", actualDistanceToMakers.toString())
-        }else{
-            Log.d("LocationUtility", "actual marker list not initialized")
         }
     }
 
