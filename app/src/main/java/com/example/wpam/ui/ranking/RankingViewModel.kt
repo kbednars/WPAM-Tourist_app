@@ -1,4 +1,4 @@
-package com.example.wpam.ui.notifications
+package com.example.wpam.ui.ranking
 
 import android.os.Parcelable
 import androidx.lifecycle.LiveData

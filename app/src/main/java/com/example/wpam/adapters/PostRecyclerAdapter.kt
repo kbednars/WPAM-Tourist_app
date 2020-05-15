@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
+import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
@@ -61,12 +62,12 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
             val requestOptions = RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
-                .placeholder(R.drawable.ic_launcher_background)
-
-            Glide.with(itemView.context)
-                .applyDefaultRequestOptions(requestOptions)
-                .load(blogPost.image).into(blogImage)
-
+            if(blogPost.image!!.isNotBlank()) {
+                Glide.with(itemView.context)
+                    .applyDefaultRequestOptions(requestOptions)
+                    .load(StorageUtility.pathToReference(blogPost.image))
+                    .into(blogImage)
+            }
             blogTitle.setOnClickListener {
 
                 Log.i("MyTAG", "TITLE CLICKED " + blogTitle.text)

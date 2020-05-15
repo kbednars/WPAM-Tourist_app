@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.wpam.databaseUtility.FirestoreUtility
 import com.facebook.login.LoginManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -79,11 +80,24 @@ class HomePage : AppCompatActivity() {
 
     private fun openNotifications() {
         val navController = findNavController(R.id.nav_host_fragment)
-        navController.navigate(R.id.search)
+        navController.navigate(R.id.navigation_landmark_list)
     }
 
     private fun openSearch() {
 
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        firebaseAuth.removeAuthStateListener(this.authStateListener)
+        FirestoreUtility.initCurrentUserDataIfFirstTime {
+        }
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        firebaseAuth.removeAuthStateListener(this.authStateListener)
     }
 
 }

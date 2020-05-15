@@ -1,6 +1,7 @@
 package com.example.wpam.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,13 @@ import com.example.wpam.DataSource
 import com.example.wpam.adapters.PostRecyclerAdapter
 import com.example.wpam.R
 import com.example.wpam.TopSpacingItemDecoration
+import com.example.wpam.callbacks.FriendsPhotoCallback
+import com.example.wpam.callbacks.GetUsersCallback
+import com.example.wpam.databaseUtility.FirestoreUtility
+import com.example.wpam.model.BlogPost
+import com.example.wpam.model.PlacePhoto
+import com.example.wpam.model.UserData
+import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
@@ -45,7 +53,7 @@ class HomeFragment : Fragment() {
                 val lastVisible = linLayoutManager.findLastVisibleItemPosition()
 
                 if (totalItemCount == lastVisible + 1) {
-                    addDataSet2()
+                    addDataSet(0, totalItemCount + 1)
                     blogAdapter.notifyDataSetChanged()
                 }
             }
@@ -54,19 +62,44 @@ class HomeFragment : Fragment() {
 
         recyclerView.addOnScrollListener(scrollListener)
         if(blogAdapter.getItemCount() == 0)
-            addDataSet()
+            addDataSet(0, 1)
+        blogAdapter.notifyDataSetChanged()
         return root
     }
 
-    private fun addDataSet(){
-        val data = DataSource.createDataSet()
-        blogAdapter.addList(data)
+    private fun addDataSet(begin : Int, end : Int) {
+        val data = ArrayList<BlogPost>()
+        /*GlobalScope.async {
+            FirestoreUtility.getFriendsPlacePhotoPaths(begin, end, object : FriendsPhotoCallback {
+                override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
+                    Log.i("FriendsPhtos:", list.toString())
+                    for(photos in list){
+                        var blogPost = BlogPost(photos.second.name, photos.second.description, photos.second.placePhotoPath, photos.first!!.name)
+                        data.add(blogPost)
+                    }
+                    blogAdapter.addList(data)
+                }
+            })
+        }*/
+
+       FirestoreUtility.getUsersRanking(object: GetUsersCallback {
+            override fun onCallback(list: MutableList<UserData>) {
+                //Log.i("FriendsPhtos:", list.toString())
+                Log.i("FriendsPhtos:", list.size.toString())
+
+                for(photos in list){
+                    var blogPost = BlogPost(photos.name, photos.description, photos.profilePicturePath, photos.name)
+                    data.add(blogPost)
+                    Log.i("FriendsPhtos:", blogPost.toString())
+                }
+                blogAdapter.addList(data)
+                blogAdapter.notifyDataSetChanged()
+            }
+        })
+       blogAdapter.notifyDataSetChanged()
     }
 
-    private fun addDataSet2(){
-        val data = DataSource.createDataSet()
-        blogAdapter.addList(data.subList(2,5))
-    }
+
 
 
     override fun onPause() {

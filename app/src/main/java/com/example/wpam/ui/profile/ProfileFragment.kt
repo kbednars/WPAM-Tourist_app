@@ -3,7 +3,6 @@ package com.example.wpam.ui.profile
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -35,12 +34,11 @@ class ProfileFragment : Fragment() {
         profileViewModel =
             ViewModelProviders.of(this).get(ProfileViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_profile, container, false)
-        val textView: TextView = root.findViewById(R.id.text_profile)
         profileViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+
         })
 
-        val signOutButton = root.findViewById(R.id.fragment_sign_out_button) as Button
+        val signOutButton = root.findViewById(R.id.profile_sign_out_button) as Button
         signOutButton.setOnClickListener{
                 view: View? -> firebaseAuth.signOut()
             loginManager.logOut()

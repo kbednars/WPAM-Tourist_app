@@ -1,20 +1,23 @@
-package com.example.wpam.ui.notifications
+package com.example.wpam.ui.ranking
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wpam.DataSource
 import com.example.wpam.R
 import com.example.wpam.TopSpacingItemDecoration
-import com.example.wpam.adapters.PostRecyclerAdapter
 import com.example.wpam.adapters.RankingRecyclerAdapter
+import com.example.wpam.callbacks.GetUsersCallback
+import com.example.wpam.databaseUtility.FirestoreUtility
+import com.example.wpam.model.BlogPost
+import com.example.wpam.model.RankingItem
+import com.example.wpam.model.UserData
 
 class RankingFragment : Fragment() {
 
@@ -48,11 +51,10 @@ class RankingFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 val totalItemCount = linLayoutManager.itemCount
-                val lastVisible = linLayoutManager.findLastVisibleItemPosition()
-
+                val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
+                val firstVisible = linLayoutManager.findFirstCompletelyVisibleItemPosition()
                 if (totalItemCount == lastVisible + 1) {
                     addDataSet()
-                    rankingAdapter.notifyDataSetChanged()
                 }
             }
 
@@ -66,8 +68,17 @@ class RankingFragment : Fragment() {
     }
 
     private fun addDataSet(){
-        val data = DataSource.createDataSetRanking()
-        rankingAdapter.addList(data)
+        val data = ArrayList<RankingItem>()
+        FirestoreUtility.getUsersRanking(object: GetUsersCallback {
+            override fun onCallback(list: MutableList<UserData>) {
+                for(photos in list){
+                    var rankingItem = RankingItem(photos.name, photos.points.toString(), photos.profilePicturePath)
+                    data.add(rankingItem)
+                }
+                rankingAdapter.addList(data)
+                rankingAdapter.notifyDataSetChanged()
+            }
+        })
     }
 
 
