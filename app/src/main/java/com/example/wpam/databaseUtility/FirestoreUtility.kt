@@ -9,6 +9,7 @@ import com.example.wpam.model.UserData
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -165,6 +166,14 @@ object FirestoreUtility{
                 }
                 list = list.toList().sortedBy { it.name }.toMutableList()
                 getUsersCallback.onCallback(list)
+            }
+        }
+    }
+
+    fun getUserDataById(UID:String, getUserByIdCallback: GetUserByIdCallback){
+        firestoreInstance.collection("usersData").document(UID).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                getUserByIdCallback.onCallback(task.result!!.toObject(UserData::class.java)!!)
             }
         }
     }

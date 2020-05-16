@@ -116,8 +116,8 @@ class DisplayLoggedActivity : AppCompatActivity() {
                     Log.d("CurrentUserPhotos:", list.toString())
                 }
             })
-            FirestoreUtility.addFriendAccount("YKk51PhrsEabwPECRlFT7Zj19Nq1")
-            FirestoreUtility.addPlacePhoto("cos", "Pałac Kultury i Nauki", "fajnie tam bylo")
+            //FirestoreUtility.addFriendAccount("YKk51PhrsEabwPECRlFT7Zj19Nq1")
+           // FirestoreUtility.addPlacePhoto("cos", "Pałac Kultury i Nauki", "fajnie tam bylo")
 
             FirestoreUtility.getFriendsPlacePhotoPaths(0,10,object : FriendsPhotoCallback{
                 override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
@@ -125,11 +125,16 @@ class DisplayLoggedActivity : AppCompatActivity() {
                 }
             })
 
-            FirestoreUtility.addLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
-            FirestoreUtility.deleteLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
+            //FirestoreUtility.addLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
+            //FirestoreUtility.deleteLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
             FirestoreUtility.getUsersRanking(0,5, object: GetUsersCallback{
                 override fun onCallback(list: MutableList<UserData>) {
                     Log.d("Callback Ranking:", list.toString())
+                }
+            })
+            FirestoreUtility.getUserDataById("YKk51PhrsEabwPECRlFT7Zj19Nq1", object:GetUserByIdCallback{
+                override fun onCallback(userData: UserData) {
+                    Log.d("UserDataById:",userData.toString())
                 }
             })
         }
