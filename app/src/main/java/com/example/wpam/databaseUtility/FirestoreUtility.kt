@@ -9,6 +9,7 @@ import com.example.wpam.model.UserData
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -169,6 +170,14 @@ object FirestoreUtility{
         }
     }
 
+    fun getUserDataById(UID:String, getUserByIdCallback: GetUserByIdCallback){
+        firestoreInstance.collection("usersData").document(UID).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                getUserByIdCallback.onCallback(task.result!!.toObject(UserData::class.java)!!)
+            }
+        }
+    }
+
     fun getCityMarkers(markerCallback: MarkerCallback) {
         firestoreInstance.collection(LocationUtility.getActualCity()).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -231,6 +240,21 @@ object FirestoreUtility{
                 list = list.toList().sortedByDescending { it.points }.toMutableList()
                 list = list.toList().subList( firstUser, if (firstUser + userNumber < list.size) firstUser + userNumber else list.size).toMutableList()
                 getUsersCallback.onCallback(list)
+            }
+        }
+    }
+
+    fun getFriendsData(getUsersCallback: GetUsersCallback){
+        firestoreInstance.collection("usersData").get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val friendsUserData:MutableList<UserData> = mutableListOf()
+                val userList = task.result!!.toObjects(UserData::class.java)
+                val currUser = userList.toList().find{user -> user.uid.equals(FirebaseAuth.getInstance().currentUser!!.uid)}
+                for(friends in currUser!!.friendsAccounts){
+                    val friendData = userList.toList().find{user -> user.uid.equals(friends)}
+                    friendsUserData.add(friendData!!)
+                }
+                getUsersCallback.onCallback(friendsUserData)
             }
         }
     }
