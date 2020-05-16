@@ -73,13 +73,7 @@ class ProfileLandmarkListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
             image.setOnClickListener(){
                 Log.d("Zdjatko klikniete: ",title.toString())
             }
-
-
-
-
-
         }
-
 
     }
 
