@@ -99,42 +99,47 @@ class DisplayLoggedActivity : AppCompatActivity() {
 
         val googleMapsButton = findViewById<View>(R.id.googleMapsButton) as Button
         googleMapsButton.setOnClickListener{
-            LocationUtility.getMarkers(object: GetMarkersCallback{
+            /*LocationUtility.getMarkers(object: GetMarkersCallback{
                 override fun onCallback(list: MutableList<Pair<MarkerInfo, String>>) {
                     Log.d("getMarkers: ", list.toString())
                 }
-            })
-            FirestoreUtility.getUsersByName("marC", object: GetUsersCallback{
+            })*/
+            /*FirestoreUtility.getUsersByName("marC", object: GetUsersCallback{
                 override fun onCallback(list: MutableList<UserData>) {
                     list.forEach {user->
                         Log.d("getUserByName CB: ", user.name)
                     }
                 }
-            })
-            FirestoreUtility.getCurrentUserPhotoCollection(0,10,object: PhotoCallback{
+            })*/
+            /*FirestoreUtility.getCurrentUserPhotoCollection(0,10,object: PhotoCallback{
                 override fun onCallback(list: MutableList<PlacePhoto>) {
                     Log.d("CurrentUserPhotos:", list.toString())
                 }
-            })
+            })*/
             //FirestoreUtility.addFriendAccount("YKk51PhrsEabwPECRlFT7Zj19Nq1")
            // FirestoreUtility.addPlacePhoto("cos", "Pałac Kultury i Nauki", "fajnie tam bylo")
 
-            FirestoreUtility.getFriendsPlacePhotoPaths(0,10,object : FriendsPhotoCallback{
+            /*FirestoreUtility.getFriendsPlacePhotoPaths(0,10,object : FriendsPhotoCallback{
                 override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
                     Log.d("FriendsPhotos: ", list.toString())
                 }
-            })
+            })*/
 
             //FirestoreUtility.addLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
             //FirestoreUtility.deleteLike("YKk51PhrsEabwPECRlFT7Zj19Nq1","test")
-            FirestoreUtility.getUsersRanking(0,5, object: GetUsersCallback{
+            /*FirestoreUtility.getUsersRanking(0,5, object: GetUsersCallback{
                 override fun onCallback(list: MutableList<UserData>) {
                     Log.d("Callback Ranking:", list.toString())
                 }
-            })
-            FirestoreUtility.getUserDataById("YKk51PhrsEabwPECRlFT7Zj19Nq1", object:GetUserByIdCallback{
+            })*/
+          /* FirestoreUtility.getUserDataById("YKk51PhrsEabwPECRlFT7Zj19Nq1", object:GetUserByIdCallback{
                 override fun onCallback(userData: UserData) {
                     Log.d("UserDataById:",userData.toString())
+                }
+            })*/
+            FirestoreUtility.getFriendsData(object: GetUsersCallback{
+                override fun onCallback(list: MutableList<UserData>) {
+                    Log.d("FriendsData", list.toString())
                 }
             })
         }

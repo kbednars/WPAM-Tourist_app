@@ -243,4 +243,19 @@ object FirestoreUtility{
             }
         }
     }
+
+    fun getFriendsData(getUsersCallback: GetUsersCallback){
+        firestoreInstance.collection("usersData").get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val friendsUserData:MutableList<UserData> = mutableListOf()
+                val userList = task.result!!.toObjects(UserData::class.java)
+                val currUser = userList.toList().find{user -> user.uid.equals(FirebaseAuth.getInstance().currentUser!!.uid)}
+                for(friends in currUser!!.friendsAccounts){
+                    val friendData = userList.toList().find{user -> user.uid.equals(friends)}
+                    friendsUserData.add(friendData!!)
+                }
+                getUsersCallback.onCallback(friendsUserData)
+            }
+        }
+    }
 }
