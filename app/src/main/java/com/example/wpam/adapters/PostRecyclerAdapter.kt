@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
+import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
@@ -54,11 +55,18 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         val blogImage = itemView.blog_image
         val blogTitle = itemView.blog_title
         val blogAuthor = itemView.blog_author
+        val bloglikes = itemView.blog_likes
+        val blogLikeButton = itemView.blog_like_button
 
 
         fun bind(blogPost: BlogPost) {
             blogTitle.setText(blogPost.title)
             blogAuthor.setText(blogPost.username)
+            bloglikes.setText(blogPost.likes.toString())
+            if(blogPost.isliked)
+                blogLikeButton.setImageResource(R.drawable.ic_thumb_up_blue_24dp)
+            else
+                blogLikeButton.setImageResource(R.drawable.ic_thumb_up_grey_24dp)
 
             val requestOptions = RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
@@ -81,6 +89,25 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                 val bundle = Bundle()
                 bundle.putString("notificationId", blogPost.uid)
                 navController?.navigate(R.id.action_navigation_home_to_friendProfileFragment, bundle)
+            }
+            blogLikeButton.setOnClickListener {
+                if(blogPost.isliked){
+                    blogPost.likes = blogPost.likes -1
+                    bloglikes.setText((blogPost.likes).toString())
+                    blogPost.isliked = false
+                    FirestoreUtility.deleteLike(blogPost.uid,blogPost.title)
+                    Log.i("MyTAG", "Se usune lajka")
+                    blogLikeButton.setImageResource(R.drawable.ic_thumb_up_grey_24dp)
+                }else{
+                    Log.i("MyTAG", blogPost.uid)
+                    blogLikeButton.setImageResource(R.drawable.ic_thumb_up_blue_24dp)
+                    Log.i("MyTAG", blogPost.title)
+                    FirestoreUtility.addLike(blogPost.uid,blogPost.title)
+                    blogPost.likes = blogPost.likes + 1
+                    bloglikes.setText((blogPost.likes).toString())
+                    blogPost.isliked = true
+                    Log.i("MyTAG", "Se dodam Lajka")
+                }
             }
 
 

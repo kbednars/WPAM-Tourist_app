@@ -18,6 +18,7 @@ import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.model.BlogPost
 import com.example.wpam.model.PlacePhoto
 import com.example.wpam.model.UserData
+import com.google.firebase.auth.FirebaseAuth
 
 class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
@@ -47,19 +48,13 @@ class HomeFragment : Fragment() {
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
-
                 val totalItemCount = linLayoutManager.itemCount
                 val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
-
                 if (totalItemCount == lastVisible + 1) {
                     recyclerView.removeOnScrollListener(scrollListener)
                     addDataSet(0, totalItemCount + 2)
                 }
-
-
             }
-
         }
 
         recyclerView.addOnScrollListener(scrollListener)
@@ -69,19 +64,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun addDataSet(begin : Int, end : Int) {
-
         val data = ArrayList<BlogPost>()
-
         FirestoreUtility.getFriendsPlacePhotoPaths(begin, end, object : FriendsPhotoCallback {
             override fun onCallback(list: MutableList<Pair<UserData?, PlacePhoto>>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.second.name, photos.second.description, photos.second.placePhotoPath, photos.first!!.name, photos.first!!.uid )
+                    var blogPost = BlogPost(photos.second.name, photos.second.description, photos.second.placePhotoPath, photos.first!!.name, photos.second.likes.size,
+                        photos.second.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , photos.first!!.uid )
                     data.add(blogPost)
                 }
                 blogAdapter.submitList(data)
-
                 recyclerView.addOnScrollListener(scrollListener)
-
                 activity?.runOnUiThread({
                     blogAdapter.notifyDataSetChanged()})
             }
