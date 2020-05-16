@@ -80,7 +80,7 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
                 val bundle = Bundle()
                 bundle.putString("notificationId", blogPost.uid)
-                navController?.navigate(R.id.action_navigation_home_to_userListFragmet, bundle)
+                navController?.navigate(R.id.action_navigation_home_to_friendProfileFragment, bundle)
             }
 
 
