@@ -1,7 +1,6 @@
 package com.example.wpam.adapters
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +10,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
 import com.example.wpam.databaseUtility.StorageUtility
-import com.example.wpam.model.BlogPost
 import com.example.wpam.model.UserData
-import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 import kotlinx.android.synthetic.main.layout_profile_list_item.view.*
 
-class ProfileRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class FriendRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var items: List<UserData> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -75,10 +72,9 @@ class ProfileRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
                 val bundle = Bundle()
                 bundle.putString("notificationId", userData.uid)
-                navController?.navigate(R.id.action_navigation_search_to_friendProfileFragment, bundle)
+                navController?.navigate(R.id.action_friendListFragment_to_friendProfileFragment, bundle)
             }
         }
 
     }
-
 }

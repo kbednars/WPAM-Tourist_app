@@ -7,9 +7,9 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_route_creator"
-        android:icon="@drawable/ic_gesture_black_24dp"
-        android:title="@string/title_route_creator" />
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="@string/title_search" />
 
     <item
         android:id="@+id/navigation_get_points"

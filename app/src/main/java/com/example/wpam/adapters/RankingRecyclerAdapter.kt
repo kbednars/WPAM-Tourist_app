@@ -1,13 +1,16 @@
 package com.example.wpam.adapters
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
+import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
 import com.example.wpam.model.RankingItem
@@ -70,7 +73,11 @@ class RankingRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     .into(rankingProfileImage)
             }
             itemView.setOnClickListener {
-                Log.i("MyTAG", "TITLE CLICKED " + rankingItem.username.toString())
+
+                val navController = itemView?.findNavController()
+                val bundle = Bundle()
+                bundle.putString("notificationId", rankingItem.uid)
+                navController?.navigate(R.id.action_navigation_ranking_to_friendProfileFragment, bundle)
             }
         }
     }

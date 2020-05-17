@@ -16,10 +16,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_route_creator"
-        android:name="com.example.wpam.ui.dashboard.DashboardFragment"
-        android:label="@string/title_route_creator"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_search"
+        android:name="com.example.wpam.ui.search.SearchFragment"
+        android:label="@string/title_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_search_to_friendProfileFragment"
+            app:destination="@id/friendProfileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_ranking"
@@ -34,7 +38,14 @@
         android:id="@+id/navigation_profile"
         android:name="com.example.wpam.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_friendListFragment"
+            app:destination="@id/friendListFragment" />
+        <action
+            android:id="@+id/action_navigation_profile_to_photoListFragment"
+            app:destination="@id/photoListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_get_points"
         android:name="com.example.wpam.ui.points.GetPointsFragment"
@@ -57,6 +68,24 @@
     <fragment
         android:id="@+id/friendProfileFragment"
         android:name="com.example.wpam.ui.friendProfile.FriendProfileFragment"
-        android:label="fragment_friend_profile"
-        tools:layout="@layout/fragment_friend_profile" />
+        android:label="Friend Profile"
+        tools:layout="@layout/fragment_friend_profile" >
+        <action
+            android:id="@+id/action_friendProfileFragment_to_photoListFragment"
+            app:destination="@id/photoListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/friendListFragment"
+        android:name="com.example.wpam.ui.friendList.FriendListFragment"
+        android:label="Friends List"
+        tools:layout="@layout/fragment_friend_list">
+        <action
+            android:id="@+id/action_friendListFragment_to_friendProfileFragment"
+            app:destination="@id/friendProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoListFragment"
+        android:name="com.example.wpam.ui.photoList.PhotoListFragment"
+        android:label="Photo list"
+        tools:layout="@layout/fragment_photo_list" />
 </navigation>
