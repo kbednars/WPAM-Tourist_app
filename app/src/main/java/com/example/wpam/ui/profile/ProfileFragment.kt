@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -75,6 +76,12 @@ class ProfileFragment : Fragment() {
         val profileDescription = root.findViewById<TextView>(R.id.profile_description)
         val pointsCount = root.findViewById<TextView>(R.id.profile_points_count)
         val friendsCount = root.findViewById<TextView>(R.id.profile_friends_count)
+        val friends = root.findViewById<TextView>(R.id.profile_friends)
+
+        friends.setOnClickListener{
+            val navController = view?.findNavController()
+            navController?.navigate(R.id.action_navigation_profile_to_friendListFragment)
+        }
 
         FirestoreUtility.getCurrentUser { user ->
                 profileName.setText(user.name)

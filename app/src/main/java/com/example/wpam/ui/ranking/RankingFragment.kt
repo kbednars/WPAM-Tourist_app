@@ -75,7 +75,7 @@ class RankingFragment : Fragment() {
         FirestoreUtility.getUsersRanking(begin, end, object: GetUsersCallback {
             override fun onCallback(list: MutableList<UserData>) {
                 for(photos in list){
-                    var rankingItem = RankingItem(photos.name, photos.points.toString(), photos.profilePicturePath)
+                    var rankingItem = RankingItem(photos.name, photos.points.toString(), photos.profilePicturePath,photos.uid)
                     data.add(rankingItem)
                 }
                 rankingAdapter.submitList(data)
