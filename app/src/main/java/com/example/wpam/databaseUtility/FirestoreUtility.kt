@@ -89,6 +89,24 @@ object FirestoreUtility{
         Log.d("FirestoreUtility", "accountFriendUID is blank")
     }
 
+    fun deleteFriendAccount(accountFriendUID: String){
+        if (accountFriendUID.isNotBlank()) {
+            getCurrentUser { user ->
+                if(!user.friendsAccounts.contains(accountFriendUID)) {
+                    currentUserDocRef.update(
+                        "friendsAccounts",
+                        FieldValue.arrayRemove(accountFriendUID)
+                    )
+                    Log.d(
+                        "FirestoreUtility",
+                        "friend with UID " + accountFriendUID + " added to friendsAccounts"
+                    )
+                }
+            }
+        }
+        Log.d("FirestoreUtility", "accountFriendUID is blank")
+    }
+
     fun getCurrentUser(onComplete: (UserData) -> Unit) {
         currentUserDocRef.get()
             .addOnSuccessListener {
