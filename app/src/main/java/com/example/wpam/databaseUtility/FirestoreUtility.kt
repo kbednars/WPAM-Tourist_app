@@ -1,6 +1,7 @@
 package com.example.wpam.databaseUtility
 
 import android.util.Log
+import com.example.wpam.DisplayLoggedActivity
 import com.example.wpam.callbacks.*
 import com.example.wpam.locationUtility.LocationUtility
 import com.example.wpam.model.MarkerInfo
