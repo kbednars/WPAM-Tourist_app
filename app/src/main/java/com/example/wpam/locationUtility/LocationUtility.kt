@@ -20,7 +20,7 @@ object LocationUtility {
     private lateinit var actualMarkersList: MutableList<Pair<MarkerInfo, String>>
     private var choosedMarker:MarkerInfo? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private const val markerDistanceToTakePhoto = 0.05
+    private const val markerDistanceToTakePhoto = 0.1
 
     fun initLocationSerive(activity: Activity){
         if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -108,19 +108,19 @@ object LocationUtility {
         choosedMarker = null
     }
 
-    fun getChoosedMarker():MarkerInfo?{
-        return choosedMarker
+    fun getDistToTrackedMarker():Double{
+        return distance(lastLocation.latitude, lastLocation.longitude, choosedMarker!!.positionX.toDouble(), choosedMarker!!.positionY.toDouble())
     }
 
-    fun choosedMarkerPhotoActive():Pair<Double,Boolean>{
+    fun choosedMarkerDist():Pair<Double,Boolean>{
         if(choosedMarker != null){
-            val distanceToChoosedMarker = distance(lastLocation.latitude, lastLocation.longitude, choosedMarker!!.positionX.toDouble(), choosedMarker!!.positionY.toDouble())
+            val distanceToChoosedMarker = getDistToTrackedMarker()
             if(distanceToChoosedMarker <= markerDistanceToTakePhoto){
                 Log.d("LocationUtility", "distances to choosed marker " + distanceToChoosedMarker.toString())
                 return Pair(distanceToChoosedMarker, true)
             }else{
-                Log.d("LocationUtility", "markers to far from user location")
-                return Pair(-1.0, false)
+                Log.d("LocationUtility", "marker to far from user location")
+                return Pair(distanceToChoosedMarker, false)
             }
         }else{
             Log.d("LocationUtility", "marker to track is null")
