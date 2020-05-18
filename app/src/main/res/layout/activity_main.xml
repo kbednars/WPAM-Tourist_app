@@ -38,7 +38,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="48dp"
             android:text="@string/tourist_app"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,11 +77,13 @@
 
         <Button
             android:id="@+id/signInButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="64dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="64dp"
+            android:width="80dp"
+            android:height="30dp"
             android:text="@string/sign_in"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,18 +92,20 @@
         <Button
             android:id="@+id/registerActivityButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
+            android:width="80dp"
             android:text="@string/register"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signInButton" />
+            app:layout_constraintTop_toBottomOf="@+id/signInButton"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/resetPasswordDialogButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:width="120dp"
             android:text="@string/forgot_password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

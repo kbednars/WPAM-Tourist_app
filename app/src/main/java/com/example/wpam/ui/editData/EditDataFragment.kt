@@ -28,7 +28,6 @@ import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.ui.home.HomeViewModel
 import com.example.wpam.ui.points.GetPointsViewModel
-import kotlinx.android.synthetic.main.activity_display_logged.*
 import java.io.ByteArrayOutputStream
 
 
@@ -49,8 +48,8 @@ class EditDataFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_edit_data, container, false)
         viewModel = activity?.let { ViewModelProviders.of(it).get(GetPointsViewModel::class.java) }!!
 
-        val updateUserDataButton = root.findViewById<View>(R.id.setUserDataButton) as Button
-        updateUserDataButton.setOnClickListener {
+        //val updateUserDataButton = root.findViewById<View>(R.id.setUserDataButton) as Button
+       /* updateUserDataButton.setOnClickListener {
             if (::selectedImageBytes.isInitialized)
                 StorageUtility.uploadProfilePhoto(selectedImageBytes) { imagePath ->
                     FirestoreUtility.updateCurrentUserData(
@@ -63,10 +62,10 @@ class EditDataFragment : Fragment() {
                     editNameField.text.toString(),
                     editDescriptionField.text.toString(), null
 
-                )
+                )*/
             view?.findNavController()?.navigate(R.id.navigation_profile)
             Toast.makeText(activity, "New data set", Toast.LENGTH_LONG).show()
-        }
+        //}
 
         val takePictureButton = root.findViewById<View>(R.id.takePictureButton) as Button
         takePictureButton.setOnClickListener {
@@ -97,7 +96,7 @@ class EditDataFragment : Fragment() {
     public override fun onStart() {
         super.onStart()
 
-        FirestoreUtility.initCurrentUserDataIfFirstTime {
+        /*FirestoreUtility.initCurrentUserDataIfFirstTime {
             FirestoreUtility.getCurrentUser { user ->
                 editNameField.setText(user.name)
                 editDescriptionField.setText(user.description)
@@ -111,7 +110,7 @@ class EditDataFragment : Fragment() {
                         )
                         .into(userProfileImage)
             }
-        }
+        }*/
     }
 
     override fun onRequestPermissionsResult(
@@ -135,13 +134,13 @@ class EditDataFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         pictureJustChanged = viewModel.pictureJustChanged
-        if(pictureJustChanged){
+        /*if(pictureJustChanged){
             viewModel.pictureJustChanged = false
            selectedImageBytes = viewModel.selectedImageBytes
             Glide.with(this)
                 .load(selectedImageBytes)
                 .into(userProfileImage)
-        }
+        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -163,10 +162,10 @@ class EditDataFragment : Fragment() {
             viewModel.pictureJustChanged = true
             viewModel.selectedImageBytes = selectedImageBytes
 
-            Glide.with(this)
+            /*Glide.with(this)
                 .load(selectedImageBytes)
                 .into(userProfileImage)
-
+*/
 
         }
         if (requestCode == IMAGE_CAPTURE_CODE && resultCode == Activity.RESULT_OK) {
@@ -181,9 +180,9 @@ class EditDataFragment : Fragment() {
             viewModel.pictureJustChanged = true
             viewModel.selectedImageBytes = selectedImageBytes
 
-            Glide.with(this)
+            /*Glide.with(this)
                 .load(selectedImageBytes)
-                .into(userProfileImage)
+                .into(userProfileImage)*/
 
         }
     }

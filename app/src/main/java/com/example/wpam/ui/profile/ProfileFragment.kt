@@ -32,7 +32,6 @@ import com.example.wpam.model.PlacePhoto
 import com.example.wpam.model.UserData
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_display_logged.*
 
 class ProfileFragment : Fragment() {
     private lateinit var root: View

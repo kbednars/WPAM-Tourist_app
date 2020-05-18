@@ -16,8 +16,6 @@ import com.example.wpam.R
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.ui.points.GetPointsViewModel
-import kotlinx.android.synthetic.main.activity_display_logged.*
-import org.w3c.dom.Text
 
 
 class AddPost : Fragment() {

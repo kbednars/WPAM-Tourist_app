@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         val resetPasswordButton = findViewById<View>(R.id.resetPasswordDialogButton) as Button
         resetPasswordButton.setOnClickListener{
-            val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reset_password, null)
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reset_password,null)
             val mBuilder = AlertDialog.Builder(this).setView(mDialogView)
             val emailResetEmail = mDialogView.findViewById<EditText>(R.id.emailResetField)
             val mAlertDialog = mBuilder.show()

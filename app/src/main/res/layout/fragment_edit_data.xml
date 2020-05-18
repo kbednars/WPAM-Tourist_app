@@ -8,24 +8,25 @@
     tools:context=".ui.editData.EditDataFragment">
 
     <TextView
-            android:id="@+id/descriptionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/user_data"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userProfileImage" />
+        android:id="@+id/descriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/user_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userProfileImage" />
 
-        <Button
-            android:id="@+id/setUserDataButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/update_user_data"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editDescriptionField" />
+    <Button
+        android:id="@+id/setUserDataButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:width="120dp"
+        android:text="@string/update_user_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDescriptionField" />
 
         <EditText
             android:id="@+id/editNameField"
@@ -64,14 +65,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/com_facebook_profile_picture_blank_square" />
 
-        <Button
-            android:id="@+id/takePictureButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="32dp"
-            android:text="Take Picture"
-            app:layout_constraintBottom_toTopOf="@+id/descriptionText"
-            app:layout_constraintStart_toEndOf="@+id/userProfileImage" />
+    <Button
+        android:id="@+id/takePictureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="32dp"
+        android:width="110dp"
+        android:text="Take Picture"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionText"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

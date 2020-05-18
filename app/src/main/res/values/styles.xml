@@ -8,6 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">@font/fresca</item>
         <item name="fontFamily">@font/fresca</item>
+        <item name="android:buttonStyle">@style/ButtonColor</item>
+        <item name="colorButtonNormal">@color/com_facebook_blue</item>
+    </style>
+s
+
+    <style name="ButtonColor" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@color/textbuttonColor</item>
+        <item name="android:background">@drawable/ripple</item>
+        <item name="android:height">30dp</item>
+    </style>
+
+
+    <style name="AppTheme.RoundedCornerMaterialButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_shape</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

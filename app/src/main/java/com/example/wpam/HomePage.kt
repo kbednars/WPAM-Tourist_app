@@ -26,7 +26,6 @@ import com.example.wpam.ui.points.GetPointsViewModel
 import com.facebook.login.LoginManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_display_logged.*
 import java.io.ByteArrayOutputStream
 
 class HomePage : AppCompatActivity() {

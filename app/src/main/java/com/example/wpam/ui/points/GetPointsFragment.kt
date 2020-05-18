@@ -76,7 +76,13 @@ class GetPointsFragment : Fragment() {
             Timer("SettingUp", false).schedule(0, 1000) {
                 val info = LocationUtility.choosedMarkerDist()
                 activity?.runOnUiThread({
-                    distance.setText(info.first.toString())
+                    var distString = String()
+                    if(info.first > 1.0)
+                        distString = String.format("%.2f km", info.first)
+                    else{
+                        distString = String.format("%.0f m", info.first*1000)
+                    }
+                    distance.setText(distString)
                     makePhotoButton.isVisible = info.second
                     makePhotoButton.isClickable = info.second
                 })
