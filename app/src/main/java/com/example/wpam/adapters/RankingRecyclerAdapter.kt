@@ -14,6 +14,7 @@ import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
 import com.example.wpam.model.RankingItem
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.layout_ranking_list_item.view.*
 
 class RankingRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -73,11 +74,18 @@ class RankingRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     .into(rankingProfileImage)
             }
             itemView.setOnClickListener {
-
                 val navController = itemView?.findNavController()
-                val bundle = Bundle()
-                bundle.putString("notificationId", rankingItem.uid)
-                navController?.navigate(R.id.action_navigation_ranking_to_friendProfileFragment, bundle)
+                if(rankingItem.uid != FirebaseAuth.getInstance().currentUser?.uid) {
+
+                    val bundle = Bundle()
+                    bundle.putString("notificationId", rankingItem.uid)
+                    navController?.navigate(
+                        R.id.action_navigation_ranking_to_friendProfileFragment,
+                        bundle
+                    )
+                }else{
+                    navController.navigate(R.id.navigation_profile)
+                }
             }
         }
     }

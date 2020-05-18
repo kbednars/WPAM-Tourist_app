@@ -3,18 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.wpam.MainActivity">
     <item
-        android:id="@+id/action_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="Notifications"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/action_edit_data"
+        android:title="Edit Data" />
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="@android:string/search_go"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_log_out"
+        android:title="Log Out" />
 </menu>

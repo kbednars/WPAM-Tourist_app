@@ -92,7 +92,7 @@ object FirestoreUtility{
     fun deleteFriendAccount(accountFriendUID: String){
         if (accountFriendUID.isNotBlank()) {
             getCurrentUser { user ->
-                if(!user.friendsAccounts.contains(accountFriendUID)) {
+                if(user.friendsAccounts.contains(accountFriendUID)) {
                     currentUserDocRef.update(
                         "friendsAccounts",
                         FieldValue.arrayRemove(accountFriendUID)

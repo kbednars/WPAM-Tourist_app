@@ -27,6 +27,7 @@ class PhotoListFragment : Fragment() {
     private lateinit var scrollListener: RecyclerView.OnScrollListener
     private lateinit var linLayoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var username : String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +40,8 @@ class PhotoListFragment : Fragment() {
 
         val bundle = this.arguments
         val position = (bundle?.getString("notificationId") ?: "nobody")
+        val uid = (bundle?.getString("uid") ?: "nobody")
+        username = (bundle?.getString("username") ?: "nobody")
 
         recyclerView.apply{
             layoutManager = linLayoutManager
@@ -53,30 +56,28 @@ class PhotoListFragment : Fragment() {
                 val totalItemCount = linLayoutManager.itemCount
                 val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
                 if (totalItemCount == lastVisible + 1) {
-                    addDataSet(0, totalItemCount + 2)
+                    addDataSet(0, totalItemCount + 2, uid, totalItemCount + 1)
                 }
             }
         }
         recyclerView.addOnScrollListener(scrollListener)
-        addDataSet(0, position.toInt() +2)
-        recyclerView.scrollToPosition(position.toInt())
-
+        addDataSet(0, position.toInt() +2, uid, position.toInt())
         Log.i("MyTAG", position)
         return root
     }
 
-    private fun addDataSet(begin : Int, end : Int) {
+    private fun addDataSet(begin : Int, end : Int, uid: String, position: Int) {
         val data = ArrayList<BlogPost>()
-        FirestoreUtility.getCurrentUserPhotoCollection(0,10,object: PhotoCallback {
+        FirestoreUtility.getUserPhotoCollection(uid,0,10,object: PhotoCallback {
             override fun onCallback(list: MutableList<PlacePhoto>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, "me", photos.likes.size,
-                        photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , "me" )
+                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, username , photos.likes.size,
+                        photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , uid )
                     data.add(blogPost)
                 }
                 blogAdapter.submitList(data)
                 blogAdapter.notifyDataSetChanged()
-
+                recyclerView.scrollToPosition(position.toInt())
             }
         })
     }

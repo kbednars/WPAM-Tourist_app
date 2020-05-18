@@ -43,7 +43,8 @@ class FriendProfileFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var isFriend : Boolean = false
     private lateinit var scrollListener: RecyclerView.OnScrollListener
-
+    private lateinit var username : String
+    private lateinit var uid : String
 
     private lateinit var viewModel: FriendProfileViewModel
 
@@ -56,7 +57,8 @@ class FriendProfileFragment : Fragment() {
         profileLandmarkListAdapter = ProfileLandmarkListAdapter()
         recyclerView = root.findViewById<RecyclerView>(R.id.friend_profile_recycle_view)
         val bundle = this.arguments
-        val uid = (bundle?.getString("notificationId") ?: "nobody")
+        uid = (bundle?.getString("notificationId") ?: "nobody")
+        username = "nobody"
 
         recyclerView.apply{
             layoutManager = linLayoutManager
@@ -82,11 +84,12 @@ class FriendProfileFragment : Fragment() {
             if(isFriend){
                 isFriend = false
                 addFriendButton.setText("Add Friend")
-
+                FirestoreUtility.deleteFriendAccount(uid)
                 Log.i("MyTAG", "Usuwam")
+                Log.i("MyTAG", uid)
             }else{
                 isFriend = true
-                //FirestoreUtility.addFriendAccount(uid)
+                FirestoreUtility.addFriendAccount(uid)
                 Log.i("MyTAG", "Dodaje")
                 addFriendButton.setText("Remove Friend")
             }
@@ -104,6 +107,7 @@ class FriendProfileFragment : Fragment() {
                 GetUserByIdCallback {
                 override fun onCallback(userData: UserData) {
                     profileName.setText(userData.name)
+                    username = userData.name
                     profileDescription.setText(userData.description)
                     friendsCount.setText(userData.friendsAccounts.size.toString())
                     pointsCount.setText(userData.points.toString())
@@ -125,14 +129,14 @@ class FriendProfileFragment : Fragment() {
                 val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
                 if (totalItemCount == lastVisible + 1) {
                     recyclerView.removeOnScrollListener(scrollListener)
-                    addDataSet(0, 10)
+                    addDataSet(0, 10, uid)
                 }
             }
         }
 
         recyclerView.addOnScrollListener(scrollListener)
         if(profileLandmarkListAdapter.getItemCount() == 0)
-            addDataSet(0, 10)
+            addDataSet(0, 10, uid)
 
         return root
 
@@ -140,21 +144,20 @@ class FriendProfileFragment : Fragment() {
     }
 
 
-    private fun addDataSet(begin : Int, end : Int) {
+    private fun addDataSet(begin : Int, end : Int, uid : String) {
         val data = ArrayList<BlogPost>()
 
-        FirestoreUtility.getCurrentUserPhotoCollection(begin,end,object: PhotoCallback {
+        FirestoreUtility.getUserPhotoCollection(uid, begin,end,object: PhotoCallback {
             override fun onCallback(list: MutableList<PlacePhoto>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, "friend", photos.likes.size,
-                        photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , "friend" )
+                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, username, photos.likes.size,
+                        photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , uid )
                     data.add(blogPost)
                 }
                 profileLandmarkListAdapter.submitList(data)
                 recyclerView.addOnScrollListener(scrollListener)
-                activity?.runOnUiThread({
-                    profileLandmarkListAdapter.notifyDataSetChanged()})
-            }
+                profileLandmarkListAdapter.notifyDataSetChanged()}
+
         })
 
 

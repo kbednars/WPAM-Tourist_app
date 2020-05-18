@@ -13,6 +13,7 @@ import com.example.wpam.R
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
 class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -82,13 +83,16 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             }
 
             blogAuthor.setOnClickListener {
-                Log.i("MyTAG", "Author: " + blogAuthor.text)
                 val navController = itemView?.findNavController()
-
-
-                val bundle = Bundle()
-                bundle.putString("notificationId", blogPost.uid)
-                navController?.navigate(R.id.action_navigation_home_to_friendProfileFragment, bundle)
+                Log.i("MyTAG", navController.currentDestination?.label.toString())
+                if(navController.currentDestination?.label.toString() == "Home" && blogPost.uid != FirebaseAuth.getInstance().currentUser?.uid)  {
+                    val bundle = Bundle()
+                    bundle.putString("notificationId", blogPost.uid)
+                    navController?.navigate(
+                        R.id.action_navigation_home_to_friendProfileFragment,
+                        bundle
+                    )
+                }
             }
             blogLikeButton.setOnClickListener {
                 if(blogPost.isliked){

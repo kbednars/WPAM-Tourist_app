@@ -8,59 +8,78 @@
     android:visibility="visible"
     tools:context=".ui.points.GetPoints">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/child_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:visibility="visible">
+    <ImageView
+        android:id="@+id/get_points_marker_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/com_facebook_profile_picture_blank_square"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/get_points_marker_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_points_marker_photo" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/parent_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_points_marker_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/get_points_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/get_points_button_choose_marker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Marker"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/get_points_distance" />
 
-        <EditText
-            android:id="@+id/getPointsEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="99dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="99dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Odleglosc"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/get_points_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
-        <Button
-            android:id="@+id/setUserDataButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="128dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="128dp"
-            android:text="@string/update_user_data"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/getPointsEditText" />
-
-        <Button
-            android:id="@+id/getPointsTakePictureButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="146dp"
-            android:layout_marginBottom="32dp"
-            android:text="Take Picture"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/get_points_make_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make Photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_points_button_choose_marker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

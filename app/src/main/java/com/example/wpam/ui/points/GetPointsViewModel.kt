@@ -2,6 +2,7 @@ package com.example.wpam.ui.points
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.wpam.model.MarkerInfo
 
 class GetPointsViewModel : ViewModel() {
     // TODO: Implement the ViewModel
@@ -17,4 +18,8 @@ class GetPointsViewModel : ViewModel() {
         value = false
     }
 
+    public var marker: MarkerInfo? = null
+
+    public lateinit var selectedImageBytes: ByteArray
+    public  var pictureJustChanged = false
 }
