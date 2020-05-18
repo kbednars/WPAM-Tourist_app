@@ -54,6 +54,9 @@
             android:id="@+id/action_navigation_get_points_to_search"
             app:destination="@id/navigation_landmark_list"
             app:popUpTo="@id/navigation_get_points" />
+        <action
+            android:id="@+id/action_navigation_get_points_to_addPost"
+            app:destination="@id/addPost" />
     </fragment>
     <fragment
         android:id="@+id/navigation_landmark_list"
@@ -88,4 +91,14 @@
         android:name="com.example.wpam.ui.photoList.PhotoListFragment"
         android:label="Photo list"
         tools:layout="@layout/fragment_photo_list" />
+    <fragment
+        android:id="@+id/navigation_edit_data"
+        android:name="com.example.wpam.ui.editData.EditDataFragment"
+        android:label="fragment_edit_data"
+        tools:layout="@layout/fragment_edit_data" />
+    <fragment
+        android:id="@+id/addPost"
+        android:name="com.example.wpam.ui.addPost.AddPost"
+        android:label="fragment_add_post"
+        tools:layout="@layout/fragment_add_post" />
 </navigation>

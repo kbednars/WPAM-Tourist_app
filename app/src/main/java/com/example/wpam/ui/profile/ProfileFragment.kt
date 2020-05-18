@@ -134,8 +134,8 @@ class ProfileFragment : Fragment() {
         FirestoreUtility.getCurrentUserPhotoCollection(begin,end,object: PhotoCallback {
             override fun onCallback(list: MutableList<PlacePhoto>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, "me", photos.likes.size,
-                        photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , "me" )
+                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, FirebaseAuth.getInstance().currentUser?.displayName.toString(), photos.likes.size,
+                        photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , FirebaseAuth.getInstance().currentUser?.uid.toString() )
                     data.add(blogPost)
                 }
                 profileLandmarkListAdapter.submitList(data)

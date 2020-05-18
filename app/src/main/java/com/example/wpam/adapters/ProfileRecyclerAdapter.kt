@@ -13,6 +13,7 @@ import com.example.wpam.R
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
 import com.example.wpam.model.UserData
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 import kotlinx.android.synthetic.main.layout_profile_list_item.view.*
 
@@ -69,13 +70,20 @@ class ProfileRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                 .into(image)
 
             itemView.setOnClickListener {
-
                 val navController = itemView?.findNavController()
+                if(userData.uid != FirebaseAuth.getInstance().currentUser?.uid) {
 
 
-                val bundle = Bundle()
-                bundle.putString("notificationId", userData.uid)
-                navController?.navigate(R.id.action_navigation_search_to_friendProfileFragment, bundle)
+
+                    val bundle = Bundle()
+                    bundle.putString("notificationId", userData.uid)
+                    navController?.navigate(
+                        R.id.action_navigation_search_to_friendProfileFragment,
+                        bundle
+                    )
+                }else{
+                    navController.navigate(R.id.navigation_profile)
+                }
             }
         }
 

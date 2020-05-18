@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
+import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.databaseUtility.StorageUtility
 import com.example.wpam.model.BlogPost
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.layout_profile_landmark_list_item.view.*
 
 class ProfileLandmarkListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -73,7 +75,9 @@ class ProfileLandmarkListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 val bundle = Bundle()
                 bundle.putString("notificationId", position.toString())
-                if(blogPost.uid == "me")
+                bundle.putString("uid", blogPost.uid)
+                bundle.putString("username", blogPost.username)
+                if(blogPost.uid == FirebaseAuth.getInstance().currentUser?.uid.toString())
                     navController?.navigate(R.id.action_navigation_profile_to_photoListFragment, bundle)
                 else
                     navController?.navigate(R.id.action_friendProfileFragment_to_photoListFragment, bundle)

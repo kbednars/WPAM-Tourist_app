@@ -9,18 +9,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
+import com.example.wpam.cameraUtility.CameraUtility
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class GetPointsFragment : Fragment() {
 
 
     private lateinit var viewModel: GetPointsViewModel
-    private lateinit var textView: TextView
 
     lateinit var context: AppCompatActivity
 
@@ -31,17 +36,35 @@ class GetPointsFragment : Fragment() {
     ): View? {
         Log.i("MyTAG", "Jestem w onCreateView")
         val root = inflater.inflate(R.layout.fragment_get_points, container, false)
-        textView = root.findViewById(R.id.getPointsEditText)
+        viewModel = activity?.let { ViewModelProviders.of(it).get(GetPointsViewModel::class.java) }!!
 
-        val takePictureButton = root.findViewById(R.id.getPointsTakePictureButton) as Button
-        takePictureButton.setOnClickListener{
+        val chooseMarkerButton = root.findViewById(R.id.get_points_button_choose_marker) as Button
+        chooseMarkerButton.setOnClickListener{
             val navController = view?.findNavController()
 
             viewModel.search.value = true
             val bundle = Bundle()
-            bundle.putString("notificationId", textView.text.toString())
             navController?.navigate(R.id.action_navigation_get_points_to_search, bundle)
 
+        }
+
+        val image = root.findViewById(R.id.get_points_marker_photo) as ImageView
+        val title = root.findViewById(R.id.get_points_marker_title) as TextView
+        val description = root.findViewById(R.id.get_points_description) as TextView
+        val distance = root.findViewById(R.id.get_points_distance) as TextView
+
+        if(viewModel.marker != null){
+            title.setText(viewModel.marker!!.Name)
+            description.setText(viewModel.marker!!.Description)
+            val requestOptions = RequestOptions()
+                .placeholder(R.drawable.ic_launcher_background)
+            Glide.with(this)
+                .applyDefaultRequestOptions(requestOptions)
+                .load(viewModel.marker!!.miniaturePath)
+                .into(image)
+            Timer("SettingUp", false).schedule(0, 1000) {
+                activity?.runOnUiThread({distance.setText(distance.text.toString() + "a")})
+            }
         }
 
 
@@ -49,17 +72,13 @@ class GetPointsFragment : Fragment() {
 
 
 
-        val updateUserDataButton = root.findViewById(R.id.setUserDataButton2) as Button
-        updateUserDataButton.setOnClickListener {
-            Log.i("MyTAG", "Button CLICKED")
-            if (textView.text.toString() == "0"){
-                    takePictureButton.isClickable = true
-                    takePictureButton.isVisible = true
-                }else{
-                    takePictureButton.isClickable = false
-                    takePictureButton.isVisible = false
-            }
 
+
+
+        val makePhotoButton = root.findViewById(R.id.get_points_make_photo) as Button
+        makePhotoButton.setOnClickListener {
+            Log.i("MyTAG", "Button CLICKED")
+            CameraUtility.runCamera(activity as AppCompatActivity)
         }
 
         return root
@@ -73,9 +92,7 @@ class GetPointsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = activity?.let { ViewModelProviders.of(it).get(GetPointsViewModel::class.java) }!!
         Log.i("MyTAG", viewModel.dupa.value)
-        textView.text = viewModel.dupa.value;
         if(viewModel.search_pause.value == false) {
             viewModel.search.value = false
         }
@@ -83,7 +100,7 @@ class GetPointsFragment : Fragment() {
             val navController = view?.findNavController()
             viewModel.search.value = true
             val bundle = Bundle()
-            bundle.putString("notificationId", textView.text.toString())
+            bundle.putString("notificationId", "dupa")
             navController?.navigate(R.id.action_navigation_get_points_to_search, bundle)
         }
         Log.i("MyTAG", "Jestem w ActivityCreated")
@@ -99,7 +116,6 @@ class GetPointsFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         Log.i("MyTAG", "Jestem w pause")
-        viewModel.dupa.value = textView.text.toString()
         Log.i("MyTAG", viewModel.dupa.value)
 
     }
@@ -107,6 +123,12 @@ class GetPointsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.i("MyTAG", "Jestem w resume")
+        Log.i("MyTAG", viewModel.marker.toString())
+        if(viewModel.pictureJustChanged){
+            val navCont = view?.findNavController()
+            viewModel.pictureJustChanged = false
+            navCont?.navigate(R.id.action_navigation_get_points_to_addPost)
+        }
 
     }
 
