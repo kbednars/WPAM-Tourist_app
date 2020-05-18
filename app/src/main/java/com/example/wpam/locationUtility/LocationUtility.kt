@@ -82,8 +82,15 @@ object LocationUtility {
                             actualMarkersList = mutableListOf()
                             while (iterator.hasNext()){
                                 val item = iterator.next()
-                                actualMarkersList.add(Pair(item, distance(lastLocation.latitude, lastLocation.longitude,
-                                item.positionX.toDouble(), item.positionY.toDouble()).toString()))
+                                var dist = distance(lastLocation.latitude, lastLocation.longitude, item.positionX.toDouble(), item.positionY.toDouble())
+                                var distString = String()
+                                if(dist > 1.0)
+                                    distString = String.format("%.2f km", dist)
+                                else{
+                                    dist = dist*1000
+                                    distString = String.format("%.0f m", dist)
+                                }
+                                actualMarkersList.add(Pair(item, distString))
                             }
                             getMarkersCallback.onCallback(actualMarkersList)
                         } else
