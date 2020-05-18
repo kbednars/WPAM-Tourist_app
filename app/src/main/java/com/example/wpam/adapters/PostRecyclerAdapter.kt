@@ -58,12 +58,15 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         val blogAuthor = itemView.blog_author
         val bloglikes = itemView.blog_likes
         val blogLikeButton = itemView.blog_like_button
+        val blogDescription = itemView.blog_description
 
 
         fun bind(blogPost: BlogPost) {
             blogTitle.setText(blogPost.title)
             blogAuthor.setText(blogPost.username)
             bloglikes.setText(blogPost.likes.toString())
+            blogDescription.setText(blogPost.body)
+
             if(blogPost.isliked)
                 blogLikeButton.setImageResource(R.drawable.ic_thumb_up_blue_24dp)
             else

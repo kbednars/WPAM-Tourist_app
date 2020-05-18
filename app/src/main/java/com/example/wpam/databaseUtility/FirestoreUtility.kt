@@ -1,7 +1,7 @@
 package com.example.wpam.databaseUtility
 
 import android.util.Log
-import com.example.wpam.DisplayLoggedActivity
+import androidx.navigation.NavController
 import com.example.wpam.callbacks.*
 import com.example.wpam.locationUtility.LocationUtility
 import com.example.wpam.model.MarkerInfo
@@ -21,17 +21,17 @@ object FirestoreUtility{
         get() = firestoreInstance.document("usersData/${FirebaseAuth.getInstance().currentUser?.uid
             ?: throw NullPointerException("UID is null.")}")
 
-    fun initCurrentUserDataIfFirstTime(onComplete: () -> Unit) {
+    fun initCurrentUserDataIfFirstTime(onComplete: (Boolean) -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
                 val newUser = UserData(FirebaseAuth.getInstance().currentUser?.displayName ?:"", FirebaseAuth.getInstance().currentUser!!.uid,
                     "", "", mutableListOf(),0)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
-                    onComplete()
+                    onComplete(true)
                 }
             }
             else
-                onComplete()
+                onComplete(false)
         }
     }
 

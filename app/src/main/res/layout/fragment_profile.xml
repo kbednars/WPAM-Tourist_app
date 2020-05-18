@@ -7,16 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileFragment">
 
-    <Button
-        android:id="@+id/profile_sign_out_button"
-        android:layout_width="88dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="@string/sign_out"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profile_recycler_view"
         android:layout_width="0dp"
@@ -104,14 +94,5 @@
             android:layout_height="wrap_content"
             android:text="acvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvn" />
     </ScrollView>
-
-    <Button
-        android:id="@+id/profile_edit_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Edit data"
-        app:layout_constraintEnd_toEndOf="@+id/profile_sign_out_button"
-        app:layout_constraintTop_toBottomOf="@+id/profile_sign_out_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
