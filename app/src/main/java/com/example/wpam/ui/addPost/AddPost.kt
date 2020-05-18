@@ -56,7 +56,7 @@ class AddPost : Fragment() {
                         it1, text.text.toString())
 
                     viewModel.marker = null
-                    view?.findNavController()?.navigateUp()
+                    view?.findNavController()?.navigate(R.id.navigation_profile)
                 }
             }
             Log.d(

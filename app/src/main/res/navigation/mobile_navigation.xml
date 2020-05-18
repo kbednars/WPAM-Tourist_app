@@ -94,7 +94,7 @@
     <fragment
         android:id="@+id/navigation_edit_data"
         android:name="com.example.wpam.ui.editData.EditDataFragment"
-        android:label="fragment_edit_data"
+        android:label="Edit Data"
         tools:layout="@layout/fragment_edit_data" />
     <fragment
         android:id="@+id/addPost"

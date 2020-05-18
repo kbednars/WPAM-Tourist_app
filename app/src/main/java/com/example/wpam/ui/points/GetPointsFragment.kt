@@ -18,6 +18,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wpam.R
 import com.example.wpam.cameraUtility.CameraUtility
+import com.example.wpam.databaseUtility.StorageUtility
+import com.example.wpam.locationUtility.LocationUtility
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -53,6 +55,14 @@ class GetPointsFragment : Fragment() {
         val description = root.findViewById(R.id.get_points_description) as TextView
         val distance = root.findViewById(R.id.get_points_distance) as TextView
 
+        val makePhotoButton = root.findViewById(R.id.get_points_make_photo) as Button
+        makePhotoButton.setOnClickListener {
+            Log.i("MyTAG", "Button CLICKED")
+            CameraUtility.runCamera(activity as AppCompatActivity)
+        }
+        makePhotoButton.isVisible = false
+        makePhotoButton.isClickable = false
+
         if(viewModel.marker != null){
             title.setText(viewModel.marker!!.Name)
             description.setText(viewModel.marker!!.Description)
@@ -60,26 +70,21 @@ class GetPointsFragment : Fragment() {
                 .placeholder(R.drawable.ic_launcher_background)
             Glide.with(this)
                 .applyDefaultRequestOptions(requestOptions)
-                .load(viewModel.marker!!.miniaturePath)
+                .load(viewModel.marker!!.miniaturePath?.let { StorageUtility.pathToReference(it) })
                 .into(image)
+            LocationUtility.chooseMarkerToTrack(viewModel.marker!!)
             Timer("SettingUp", false).schedule(0, 1000) {
-                activity?.runOnUiThread({distance.setText(distance.text.toString() + "a")})
+                val info = LocationUtility.choosedMarkerDist()
+                activity?.runOnUiThread({
+                    distance.setText(info.first.toString())
+                    makePhotoButton.isVisible = info.second
+                    makePhotoButton.isClickable = info.second
+                })
             }
         }
 
 
 
-
-
-
-
-
-
-        val makePhotoButton = root.findViewById(R.id.get_points_make_photo) as Button
-        makePhotoButton.setOnClickListener {
-            Log.i("MyTAG", "Button CLICKED")
-            CameraUtility.runCamera(activity as AppCompatActivity)
-        }
 
         return root
     }
