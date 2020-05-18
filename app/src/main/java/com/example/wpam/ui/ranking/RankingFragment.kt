@@ -54,7 +54,7 @@ class RankingFragment : Fragment() {
                 val totalItemCount = linLayoutManager.itemCount
                 val lastVisible = linLayoutManager.findLastCompletelyVisibleItemPosition()
                 if (totalItemCount == lastVisible + 1) {
-                    addDataSet(0, totalItemCount + 2)
+                    addDataSet(0, totalItemCount + 10)
                 }
 
                 recyclerView.addOnScrollListener(scrollListener)
@@ -65,7 +65,7 @@ class RankingFragment : Fragment() {
 
         recyclerView.addOnScrollListener(scrollListener)
         if(rankingAdapter.getItemCount() == 0)
-            addDataSet(0,2)
+            addDataSet(0,10)
 
         return root
     }

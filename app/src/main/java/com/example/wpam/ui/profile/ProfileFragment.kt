@@ -42,7 +42,7 @@ class ProfileFragment : Fragment() {
     private lateinit var profileLandmarkListAdapter: ProfileLandmarkListAdapter
     private lateinit var linLayoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
-
+    private lateinit var profileName : TextView
     private lateinit var scrollListener: RecyclerView.OnScrollListener
 
     override fun onCreateView(
@@ -71,7 +71,7 @@ class ProfileFragment : Fragment() {
         }
 
 
-        val profileName = root.findViewById<TextView>(R.id.profile_username)
+        profileName = root.findViewById<TextView>(R.id.profile_username)
         val profileImage = root.findViewById<ImageView>(R.id.profile_picture)
         val profileDescription = root.findViewById<TextView>(R.id.profile_description)
         val pointsCount = root.findViewById<TextView>(R.id.profile_points_count)
@@ -99,16 +99,6 @@ class ProfileFragment : Fragment() {
         }
 
 
-        val signOutButton = root.findViewById(R.id.profile_sign_out_button) as Button
-        signOutButton.setOnClickListener{
-                view: View? -> firebaseAuth.signOut()
-            loginManager.logOut()
-            Toast.makeText(activity, "You logged out", Toast.LENGTH_LONG).show()
-            startActivity(Intent(activity, MainActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE, "Zalogowano")})
-            activity?.finish()
-        }
-
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -134,7 +124,7 @@ class ProfileFragment : Fragment() {
         FirestoreUtility.getCurrentUserPhotoCollection(begin,end,object: PhotoCallback {
             override fun onCallback(list: MutableList<PlacePhoto>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, FirebaseAuth.getInstance().currentUser?.displayName.toString(), photos.likes.size,
+                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, profileName.text.toString(), photos.likes.size,
                         photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , FirebaseAuth.getInstance().currentUser?.uid.toString() )
                     data.add(blogPost)
                 }

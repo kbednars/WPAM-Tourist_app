@@ -69,7 +69,7 @@ class MarkersRecycleAdapter(activity: FragmentActivity) : RecyclerView.Adapter<R
             if(marker.first.miniaturePath!!.isNotBlank()) {
                 Glide.with(itemView.context)
                     .applyDefaultRequestOptions(requestOptions)
-                    .load(marker.first.miniaturePath)
+                    .load(StorageUtility.pathToReference(marker.first.miniaturePath!!))
                     .into(markerImage)
             }
             itemView.setOnClickListener {

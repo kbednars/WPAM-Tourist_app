@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
 
         recyclerView.addOnScrollListener(scrollListener)
         if(blogAdapter.getItemCount() == 0)
-            addDataSet(0, 2)
+            addDataSet(0, 10)
         return root
     }
 
