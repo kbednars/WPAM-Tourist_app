@@ -12,6 +12,7 @@ import com.example.wpam.callbacks.MarkerCallback
 import com.example.wpam.databaseUtility.FirestoreUtility
 import com.example.wpam.model.MarkerInfo
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.Marker
 import java.util.*
 
 object LocationUtility {
@@ -80,17 +81,20 @@ object LocationUtility {
                             }
                             iterator = list.iterator()
                             actualMarkersList = mutableListOf()
+                            var tempMarkerList:MutableList<Pair<MarkerInfo,String>> = mutableListOf()
                             while (iterator.hasNext()){
                                 val item = iterator.next()
                                 var dist = distance(lastLocation.latitude, lastLocation.longitude, item.positionX.toDouble(), item.positionY.toDouble())
-                                var distString = String()
-                                if(dist > 1.0)
-                                    distString = String.format("%.2f km", dist)
+                                tempMarkerList.add(Pair(item, dist.toString()))
+                            }
+                            tempMarkerList = tempMarkerList.toList().sortedBy { (_,value)->value.toDouble() }.toMutableList()
+                            var distString = String()
+                            for(pair in tempMarkerList){
+                                if(pair.second.toDouble() > 1.0)
+                                    actualMarkersList.add(Pair(pair.first, String.format("%.2f km", pair.second.toDouble())))
                                 else{
-                                    dist = dist*1000
-                                    distString = String.format("%.0f m", dist)
+                                    actualMarkersList.add(Pair(pair.first, String.format("%.0f m", pair.second.toDouble()*1000)))
                                 }
-                                actualMarkersList.add(Pair(item, distString))
                             }
                             getMarkersCallback.onCallback(actualMarkersList)
                         } else
