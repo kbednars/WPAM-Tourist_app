@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="@string/title_search" />
+
+    <item
+        android:id="@+id/navigation_get_points"
+        android:icon="@drawable/ic_add_box_black_24dp"
+        android:title="@string/title_get_points" />
+    <item
+        android:id="@+id/navigation_ranking"
+        android:icon="@drawable/ic_format_list_numbered_black_24dp"
+        android:title="@string/title_ranking" />
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_account_box_black_24dp"
+        android:title="@string/title_profile" />
+
+</menu>
