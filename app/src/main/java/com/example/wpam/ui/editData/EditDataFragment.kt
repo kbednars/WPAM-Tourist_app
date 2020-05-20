@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -39,6 +40,10 @@ class EditDataFragment : Fragment() {
     val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 42
 
+
+    private lateinit var editNameField: TextView
+    private lateinit var editDescriptionField: TextView
+    private lateinit var userProfileImage: ImageView
     private lateinit var viewModel: GetPointsViewModel
 
     override fun onCreateView(
@@ -48,8 +53,10 @@ class EditDataFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_edit_data, container, false)
         viewModel = activity?.let { ViewModelProviders.of(it).get(GetPointsViewModel::class.java) }!!
 
-        //val updateUserDataButton = root.findViewById<View>(R.id.setUserDataButton) as Button
-       /* updateUserDataButton.setOnClickListener {
+        editNameField = root.findViewById<View>(R.id.editNameField) as TextView
+        editDescriptionField = root.findViewById<View>(R.id.editDescriptionField) as TextView
+        val updateUserDataButton = root.findViewById<View>(R.id.setUserDataButton) as Button
+       updateUserDataButton.setOnClickListener {
             if (::selectedImageBytes.isInitialized)
                 StorageUtility.uploadProfilePhoto(selectedImageBytes) { imagePath ->
                     FirestoreUtility.updateCurrentUserData(
@@ -62,23 +69,39 @@ class EditDataFragment : Fragment() {
                     editNameField.text.toString(),
                     editDescriptionField.text.toString(), null
 
-                )*/
+                )
             view?.findNavController()?.navigate(R.id.navigation_profile)
             Toast.makeText(activity, "New data set", Toast.LENGTH_LONG).show()
-        //}
+        }
 
         val takePictureButton = root.findViewById<View>(R.id.takePictureButton) as Button
         takePictureButton.setOnClickListener {
             CameraUtility.runCamera(activity as AppCompatActivity)
         }
 
-        val userProfileImage = root.findViewById<View>(R.id.userProfileImage) as ImageView
+           userProfileImage = root.findViewById<View>(R.id.userProfileImage) as ImageView
         userProfileImage.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
             startActivityForResult(intent, RESULT_LOAD_IMAGE)
+        }
+
+        FirestoreUtility.initCurrentUserDataIfFirstTime {
+            FirestoreUtility.getCurrentUser { user ->
+                editNameField.setText(user.name)
+                editDescriptionField.setText(user.description)
+                print(user.profilePicturePath)
+                if (!pictureJustChanged && user.profilePicturePath!!.isNotBlank())
+                    Glide.with(this)
+                        .load(StorageUtility.pathToReference(user.profilePicturePath))
+                        .apply(
+                            RequestOptions()
+                                .placeholder(R.drawable.ic_launcher_background)
+                        )
+                        .into(userProfileImage)
+            }
         }
 
         return root
@@ -96,21 +119,7 @@ class EditDataFragment : Fragment() {
     public override fun onStart() {
         super.onStart()
 
-        /*FirestoreUtility.initCurrentUserDataIfFirstTime {
-            FirestoreUtility.getCurrentUser { user ->
-                editNameField.setText(user.name)
-                editDescriptionField.setText(user.description)
-                print(user.profilePicturePath)
-                if (!pictureJustChanged && user.profilePicturePath!!.isNotBlank())
-                    Glide.with(this)
-                        .load(StorageUtility.pathToReference(user.profilePicturePath))
-                        .apply(
-                            RequestOptions()
-                                .placeholder(R.drawable.ic_launcher_background)
-                        )
-                        .into(userProfileImage)
-            }
-        }*/
+
     }
 
     override fun onRequestPermissionsResult(
@@ -134,13 +143,13 @@ class EditDataFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         pictureJustChanged = viewModel.pictureJustChanged
-        /*if(pictureJustChanged){
+        if(pictureJustChanged){
             viewModel.pictureJustChanged = false
            selectedImageBytes = viewModel.selectedImageBytes
             Glide.with(this)
                 .load(selectedImageBytes)
                 .into(userProfileImage)
-        }*/
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -157,8 +166,6 @@ class EditDataFragment : Fragment() {
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             selectedImageBytes = outputStream.toByteArray()
 
-            val viewModel = activity?.let { ViewModelProviders.of(it).get(EditDataViewModel::class.java) }!!
-
             viewModel.pictureJustChanged = true
             viewModel.selectedImageBytes = selectedImageBytes
 
@@ -174,8 +181,6 @@ class EditDataFragment : Fragment() {
             val outputStream = ByteArrayOutputStream()
             takenImage.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             selectedImageBytes = outputStream.toByteArray()
-
-            val viewModel = activity?.let { ViewModelProviders.of(it).get(EditDataViewModel::class.java) }!!
 
             viewModel.pictureJustChanged = true
             viewModel.selectedImageBytes = selectedImageBytes
