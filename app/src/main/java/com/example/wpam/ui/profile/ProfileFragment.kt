@@ -42,6 +42,23 @@ class ProfileFragment : Fragment() {
     private lateinit var linLayoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private lateinit var profileName : TextView
+    private lateinit var  profileDescription : TextView
+    private lateinit var pointsCount : TextView
+    private lateinit var friendsCount : TextView
+
+    private lateinit var friends : TextView
+
+    private lateinit var     profileImage: ImageView
+
+
+
+
+
+
+
+
+
+
     private lateinit var scrollListener: RecyclerView.OnScrollListener
 
     override fun onCreateView(
@@ -71,31 +88,18 @@ class ProfileFragment : Fragment() {
 
 
         profileName = root.findViewById<TextView>(R.id.profile_username)
-        val profileImage = root.findViewById<ImageView>(R.id.profile_picture)
-        val profileDescription = root.findViewById<TextView>(R.id.profile_description)
-        val pointsCount = root.findViewById<TextView>(R.id.profile_points_count)
-        val friendsCount = root.findViewById<TextView>(R.id.profile_friends_count)
-        val friends = root.findViewById<TextView>(R.id.profile_friends)
+        profileImage = root.findViewById<ImageView>(R.id.profile_picture)
+        profileDescription = root.findViewById<TextView>(R.id.profile_description)
+        pointsCount = root.findViewById<TextView>(R.id.profile_points_count)
+        friendsCount = root.findViewById<TextView>(R.id.profile_friends_count)
+        friends = root.findViewById<TextView>(R.id.profile_friends)
 
         friends.setOnClickListener{
             val navController = view?.findNavController()
             navController?.navigate(R.id.action_navigation_profile_to_friendListFragment)
         }
 
-        FirestoreUtility.getCurrentUser { user ->
-                profileName.setText(user.name)
-                profileDescription.setText(user.description)
-                friendsCount.setText(user.friendsAccounts.size.toString())
-                pointsCount.setText(user.points.toString())
-                print(user.profilePicturePath)
-                if (user.profilePicturePath!!.isNotBlank())
-                    Glide.with(this)
-                        .load(StorageUtility.pathToReference(user.profilePicturePath))
-                        .apply(
-                            RequestOptions()
-                                .placeholder(R.drawable.ic_launcher_background))
-                        .into(profileImage)
-        }
+
 
 
         scrollListener = object : RecyclerView.OnScrollListener() {
@@ -147,6 +151,20 @@ class ProfileFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         linLayoutManager.onRestoreInstanceState(profileViewModel.linearLayoutManager.value)
+        FirestoreUtility.getCurrentUser { user ->
+            profileName.setText(user.name)
+            profileDescription.setText(user.description)
+            friendsCount.setText(user.friendsAccounts.size.toString())
+            pointsCount.setText(user.points.toString())
+            print(user.profilePicturePath)
+            if (user.profilePicturePath!!.isNotBlank())
+                Glide.with(this)
+                    .load(StorageUtility.pathToReference(user.profilePicturePath))
+                    .apply(
+                        RequestOptions()
+                            .placeholder(R.drawable.ic_launcher_background))
+                    .into(profileImage)
+        }
     }
 
 }
