@@ -43,7 +43,7 @@ class FriendProfileFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var isFriend : Boolean = false
     private lateinit var scrollListener: RecyclerView.OnScrollListener
-    private lateinit var username : String
+    private lateinit var profileName : TextView
     private lateinit var uid : String
 
     private lateinit var viewModel: FriendProfileViewModel
@@ -58,7 +58,6 @@ class FriendProfileFragment : Fragment() {
         recyclerView = root.findViewById<RecyclerView>(R.id.friend_profile_recycle_view)
         val bundle = this.arguments
         uid = (bundle?.getString("notificationId") ?: "nobody")
-        username = "nobody"
 
         recyclerView.apply{
             layoutManager = linLayoutManager
@@ -96,7 +95,7 @@ class FriendProfileFragment : Fragment() {
         }
 
 
-        val profileName = root.findViewById<TextView>(R.id.friend_profile_username)
+        profileName = root.findViewById<TextView>(R.id.friend_profile_username)
         val profileImage = root.findViewById<ImageView>(R.id.friend_profile_picture)
         val profileDescription = root.findViewById<TextView>(R.id.friend_profile_description)
         val pointsCount = root.findViewById<TextView>(R.id.friend_profile_points_count)
@@ -107,7 +106,6 @@ class FriendProfileFragment : Fragment() {
                 GetUserByIdCallback {
                 override fun onCallback(userData: UserData) {
                     profileName.setText(userData.name)
-                    username = userData.name
                     profileDescription.setText(userData.description)
                     friendsCount.setText(userData.friendsAccounts.size.toString())
                     pointsCount.setText(userData.points.toString())
@@ -150,7 +148,7 @@ class FriendProfileFragment : Fragment() {
         FirestoreUtility.getUserPhotoCollection(uid, begin,end,object: PhotoCallback {
             override fun onCallback(list: MutableList<PlacePhoto>) {
                 for(photos in list){
-                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, username, photos.likes.size,
+                    var blogPost = BlogPost(photos.name, photos.description, photos.placePhotoPath, profileName.text.toString(), photos.likes.size,
                         photos.likes.contains(FirebaseAuth.getInstance().currentUser?.uid.toString()) , uid )
                     data.add(blogPost)
                 }
