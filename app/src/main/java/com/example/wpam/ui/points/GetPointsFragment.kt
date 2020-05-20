@@ -60,10 +60,18 @@ class GetPointsFragment : Fragment() {
             Log.i("MyTAG", "Button CLICKED")
             CameraUtility.runCamera(activity as AppCompatActivity)
         }
+        image.isVisible = false
+        title.isVisible = false
+        description.isVisible = false
+        distance.isVisible = false
         makePhotoButton.isVisible = false
         makePhotoButton.isClickable = false
 
         if(viewModel.marker != null){
+            image.isVisible = true
+            title.isVisible = true
+            description.isVisible = true
+            distance.isVisible = true
             title.setText(viewModel.marker!!.Name)
             description.setText(viewModel.marker!!.Description)
             val requestOptions = RequestOptions()
