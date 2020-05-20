@@ -67,14 +67,14 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             bloglikes.setText(blogPost.likes.toString())
             blogDescription.setText(blogPost.body)
 
-            if(blogPost.isliked)
+            if (blogPost.isliked)
                 blogLikeButton.setImageResource(R.drawable.ic_thumb_up_blue_24dp)
             else
                 blogLikeButton.setImageResource(R.drawable.ic_thumb_up_grey_24dp)
 
             val requestOptions = RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
-            if(blogPost.image!!.isNotBlank()) {
+            if (blogPost.image!!.isNotBlank()) {
                 Glide.with(itemView.context)
                     .applyDefaultRequestOptions(requestOptions)
                     .load(StorageUtility.pathToReference(blogPost.image))
@@ -88,7 +88,7 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             blogAuthor.setOnClickListener {
                 val navController = itemView?.findNavController()
                 Log.i("MyTAG", navController.currentDestination?.label.toString())
-                if(navController.currentDestination?.label.toString() == "Home" && blogPost.uid != FirebaseAuth.getInstance().currentUser?.uid)  {
+                if (navController.currentDestination?.label.toString() == "Home" && blogPost.uid != FirebaseAuth.getInstance().currentUser?.uid) {
                     val bundle = Bundle()
                     bundle.putString("notificationId", blogPost.uid)
                     navController?.navigate(
@@ -98,28 +98,27 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                 }
             }
             blogLikeButton.setOnClickListener {
-                if(blogPost.isliked){
-                    blogPost.likes = blogPost.likes -1
-                    bloglikes.setText((blogPost.likes).toString())
-                    blogPost.isliked = false
-                    FirestoreUtility.deleteLike(blogPost.uid,blogPost.title)
-                    Log.i("MyTAG", "Se usune lajka")
-                    blogLikeButton.setImageResource(R.drawable.ic_thumb_up_grey_24dp)
-                }else{
-                    Log.i("MyTAG", blogPost.uid)
-                    blogLikeButton.setImageResource(R.drawable.ic_thumb_up_blue_24dp)
-                    Log.i("MyTAG", blogPost.title)
-                    FirestoreUtility.addLike(blogPost.uid,blogPost.title)
-                    blogPost.likes = blogPost.likes + 1
-                    bloglikes.setText((blogPost.likes).toString())
-                    blogPost.isliked = true
-                    Log.i("MyTAG", "Se dodam Lajka")
+                if (blogPost.uid != FirestoreUtility.getCurrentUserUid()) {
+                    if (blogPost.isliked) {
+                        blogPost.likes = blogPost.likes - 1
+                        bloglikes.setText((blogPost.likes).toString())
+                        blogPost.isliked = false
+                        FirestoreUtility.deleteLike(blogPost.uid, blogPost.title)
+                        Log.i("MyTAG", "Se usune lajka")
+                        blogLikeButton.setImageResource(R.drawable.ic_thumb_up_grey_24dp)
+                    } else {
+                        Log.i("MyTAG", blogPost.uid)
+                        blogLikeButton.setImageResource(R.drawable.ic_thumb_up_blue_24dp)
+                        Log.i("MyTAG", blogPost.title)
+                        FirestoreUtility.addLike(blogPost.uid, blogPost.title)
+                        blogPost.likes = blogPost.likes + 1
+                        bloglikes.setText((blogPost.likes).toString())
+                        blogPost.isliked = true
+                        Log.i("MyTAG", "Se dodam Lajka")
+                    }
                 }
             }
-
-
         }
-
     }
 
 

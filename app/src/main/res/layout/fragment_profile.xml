@@ -98,7 +98,7 @@
             android:id="@+id/profile_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="acvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvnacvasndfijkansfvkjasndvaklsfvacvznxcvmxzCnv,zxmcvnaldvnaslkvn"
+            android:text=""
             android:textSize="16sp" />
     </ScrollView>
 

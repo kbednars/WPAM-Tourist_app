@@ -115,6 +115,10 @@ object FirestoreUtility{
             }
     }
 
+    fun getCurrentUserUid():String?{
+        return FirebaseAuth.getInstance().currentUser?.uid
+    }
+
     fun getCurrentUserPhotoCollection(firstPhoto: Int, photoNumber: Int, photoCallback: PhotoCallback) {
         currentUserDocRef.collection("placesPhotos").get().addOnCompleteListener{task->
             if(task.isSuccessful){
